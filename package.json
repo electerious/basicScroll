@@ -25,5 +25,8 @@
   "devDependencies": {
     "@electerious/basictasks": "2.0.0",
     "gulp": "^3.9.1"
+  },
+  "dependencies": {
+    "parse-unit": "^1.0.1"
   }
 }
