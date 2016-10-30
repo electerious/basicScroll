@@ -1,0 +1,24 @@
+{
+  "name": "basicScroll",
+  "authors": [
+    "Tobias Reich <tobias@electerious.com>"
+  ],
+  "description": "",
+  "main": [
+    "dist/basicScroll.min.css",
+    "dist/basicScroll.min.js"
+  ],
+  "keywords": [],
+  "ignore": [
+    "**/.*",
+    "demos",
+    "gulpfile.js",
+    "package.json"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/electerious/basicScroll",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/electerious/basicScroll.git"
+  }
+}

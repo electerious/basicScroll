@@ -1,0 +1,29 @@
+{
+  "name": "basicscroll",
+  "moduleName": "basicScroll",
+  "version": "3.0.0",
+  "authors": [
+    "Tobias Reich <tobias@electerious.com>"
+  ],
+  "description": "",
+  "main": "dist/basicScroll.min.js",
+  "keywords": [],
+  "scripts": {
+    "start": "gulp watch",
+    "compile": "gulp"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/electerious/basicScroll",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/electerious/basicScroll.git"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "devDependencies": {
+    "@electerious/basictasks": "2.0.0",
+    "gulp": "^3.9.1"
+  }
+}
