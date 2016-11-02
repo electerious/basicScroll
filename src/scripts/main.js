@@ -48,8 +48,10 @@ const parseAbsoluteValue = function(value) {
  */
 const relativeToAbsoluteValue = function(value, elem) {
 
+	// Use scrollTop because is's faster than getBoundingClientRect()
+	const documentTop = document.scrollingElement.scrollTop
+
 	const viewportHeight = window.innerHeight || window.outerHeight
-	const documentSize   = document.scrollingElement.getBoundingClientRect()
 	const elemSize       = elem.getBoundingClientRect()
 
 	const elemAnchor     = value.match(/^[a-z]+/)[0]
@@ -61,9 +63,9 @@ const relativeToAbsoluteValue = function(value, elem) {
 	if (viewportAnchor==='middle') y -= viewportHeight / 2
 	if (viewportAnchor==='bottom') y -= viewportHeight
 
-	if (elemAnchor==='top')    y += (elemSize.top - documentSize.top)
-	if (elemAnchor==='middle') y += (elemSize.top - documentSize.top) + elemSize.height / 2
-	if (elemAnchor==='bottom') y += (elemSize.top - documentSize.top) + elemSize.height
+	if (elemAnchor==='top')    y += (elemSize.top + documentTop)
+	if (elemAnchor==='middle') y += (elemSize.top + documentTop) + elemSize.height / 2
+	if (elemAnchor==='bottom') y += (elemSize.top + documentTop) + elemSize.height
 
 	return `${ y }px`
 
@@ -95,8 +97,8 @@ const validate = function(opts = {}) {
 
 	if (opts.elem==null) {
 
-		if (isAbsoluteValue(opts.from)!==true) throw new Error('Property `from` must be a absolute value when no `elem` has been provided')
-		if (isAbsoluteValue(opts.to)!==true)   throw new Error('Property `to` must be a absolute value when no `elem` has been provided')
+		if (isAbsoluteValue(opts.from)===false) throw new Error('Property `from` must be a absolute value when no `elem` has been provided')
+		if (isAbsoluteValue(opts.to)===false)   throw new Error('Property `to` must be a absolute value when no `elem` has been provided')
 
 	} else {
 
@@ -108,14 +110,21 @@ const validate = function(opts = {}) {
 	opts.from = parseAbsoluteValue(opts.from)
 	opts.to   = parseAbsoluteValue(opts.to)
 
+	forEachProp(opts.props, (prop) => {
+
+		if (isAbsoluteValue(prop.from)===false) throw new Error('Property `from` of prop must be a absolute value')
+		if (isAbsoluteValue(prop.to)===false)   throw new Error('Property `from` of prop must be a absolute value')
+
+		prop.from = parseAbsoluteValue(prop.from)
+		prop.to   = parseAbsoluteValue(prop.to)
+
+	})
+
 	return opts
 
 }
 
-const update = function(opts) {
-
-	const documentSize = document.scrollingElement.getBoundingClientRect()
-	const documentTop  = documentSize.top * -1
+const update = function(opts, documentTop) {
 
 	// 100% in pixel
 	const total = opts.to.value - opts.from.value
@@ -124,16 +133,34 @@ const update = function(opts) {
 	const current = documentTop - opts.from.value
 
 	// Percent already scrolled
-	let percent = (current) / (total / 100)
+	let percentage = (current) / (total / 100)
 
 	// Normalize percentage
-	if (percent<=0)  percent = 0
-	if (percent>100) percent = 100
+	if (percentage<=0)  percentage = 0
+	if (percentage>100) percentage = 100
+
+	const values = []
 
 	// Update each value
-	// TODO
+	forEachProp(opts.props, (prop, key) => {
 
-	return []
+		const diff = prop.from.value - prop.to.value
+		const unit = prop.from.unit || prop.to.unit
+
+		values.push({
+			key   : key,
+			value : (prop.from.value - (diff / 100) * percentage) + unit
+		})
+
+	})
+
+	return values
+
+}
+
+const forEachProp = function(props, fn) {
+
+	for (const key in props) fn(props[key], key, props)
 
 }
 
@@ -148,30 +175,53 @@ const setProp = function(style, prop) {
 
 }
 
-const loop = function(style) {
+/**
+ * Gets and sets new props when the user has scrolled and when there
+ * are active instances.
+ * This part get executed with every frame. Make sure it's performant as hell.
+ * @param {Object} style - Style object.
+ * @param {Object} prop - Object with a key and value.
+ */
+const loop = function(style, previousDocumentTop) {
 
-	const activeInstances = getActiveInstances(instances)
+	// Continue loop
+	const repeat = () => {
 
-	// Only animate when active instances available
-	if (activeInstances.length>0) {
-
-		// Animate each instance
-		const newProps = activeInstances.map((instance) => instance.update())
-
-		// Flatten props because each update can return multiple props.
-		// The second parameter of contact takes an array, so the line is identical to:
-		// [].concat(['1'], ['2'], ['3'])
-		const flattedProps = [].concat.apply([], newProps)
-
-		// Compare new props with old ones and only change the newbies
-		const changedProps = flattedProps // TODO
-
-		// Set new props
-		changedProps.forEach((prop) => setProp(style, prop))
+		// It depends on the browser, but it turns out that closures
+		// are sometimes faster than .bind or .apply.
+		requestAnimationFrame(() => loop(style, previousDocumentTop))
 
 	}
 
-	requestAnimationFrame(loop.bind(null, style))
+	// Get all active instances
+	const activeInstances = getActiveInstances(instances)
+
+	// Only continue when active instances available
+	if (activeInstances.length===0) return repeat()
+
+	// Use scrollTop because is's faster than getBoundingClientRect()
+	const documentTop = document.scrollingElement.scrollTop
+
+	// Only continue when documentTop has changed
+	if (previousDocumentTop===documentTop) return repeat()
+	else previousDocumentTop = documentTop
+
+	// Get new props of each instance
+	const newProps = activeInstances.map((instance) => instance.update(documentTop))
+
+	// Flatten props because each update can return multiple props.
+	// The second parameter of contact takes an array, so the line is identical to:
+	// [].concat(['1'], ['2'], ['3'])
+	const flattedProps = [].concat.apply([], newProps)
+
+	// Compare new props with old ones and only change the newbies
+	// TODO
+
+	// Set new props
+	// forEach was much slower thats why we use a simple for-loop
+	for (let i = 0; i < flattedProps.length; i++) setProp(style, flattedProps[i])
+
+	repeat()
 
 }
 
@@ -185,8 +235,6 @@ export const create = function(opts) {
 	// Validate options
 	opts = validate(opts)
 
-	console.log(opts);
-
 	// Store if instance is started or stopped
 	let active = false
 
@@ -198,9 +246,9 @@ export const create = function(opts) {
 	}
 
 	// Update props
-	const _update = () => {
+	const _update = (documentTop) => {
 
-		return update(opts)
+		return update(opts, documentTop)
 
 	}
 

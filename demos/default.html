@@ -8,10 +8,48 @@
 
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<style></style>
+	<style>
+
+		body {
+			width: 100%;
+			height: 8000px;
+		}
+
+		.first {
+			position: relative;
+			top: 1000px;
+			width: 100%;
+			text-align: center;
+			transform: translateY(var(--ty));
+			opacity: var(--o);
+			will-change: transform;
+		}
+
+	</style>
+
+	<div class="first">Hello World</div>
 
 	<script src="../dist/basicScroll.min.js"></script>
 
-	<script></script>
+	<script>
+
+		const instance = basicScroll.create({
+			elem  : document.querySelector('.first'),
+			from  : 'top-bottom',
+			to    : 'bottom-top',
+			props : {
+				'--ty': {
+					from   : '0px',
+					to     : '100px',
+					timing : 'ease'
+				},
+				'--o': {
+					from : '1',
+					to   : '0'
+				}
+			}
+		}).start()
+
+	</script>
 
 </html>
