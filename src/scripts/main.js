@@ -14,8 +14,29 @@ const getActiveInstances = function(instances) {
 }
 
 /**
+ * Returns the number of scrolled pixels.
+ * @returns {Integer} scrollTop
+ */
+const getScrollTop = function() {
+
+	// Use scrollTop because is's faster than getBoundingClientRect()
+	return document.scrollingElement.scrollTop
+
+}
+
+/**
+ * Returns the height of the viewport.
+ * @returns {Integer} viewportHeight
+ */
+const getViewportHeight = function() {
+
+	return (window.innerHeight || window.outerHeight)
+
+}
+
+/**
  * Checks if a value is absolute.
- * An absolute value must end with a unit.
+ * An absolute value must have a value that's not NaN.
  * @param {String|Integer} value
  * @returns {Boolean} isAbsolute
  */
@@ -42,17 +63,28 @@ const parseAbsoluteValue = function(value) {
 }
 
 /**
+ * Checks if a value is relative.
+ * A relative value must start and end with [a-z] and needs a '-' in the middle.
+ * @param {String|Integer} value
+ * @returns {Boolean} isRelative
+ */
+const isRelativeValue = function(value) {
+
+	return (String(value).match(/^[a-z]+-[a-z]+$/)===null ? false : true)
+
+}
+
+/**
  * Converts a relative value to an absolute value.
  * @param {String} value
+ * @param {Node} elem - Anchor of the relative value.
+ * @param {?Integer} scrollTop - Pixels scrolled in document.
+ * @param {?Integer} viewportHeight - Height of the viewport.
  * @returns {String} absoluteValue
  */
-const relativeToAbsoluteValue = function(value, elem) {
+const relativeToAbsoluteValue = function(value, elem, scrollTop = getScrollTop(), viewportHeight = getViewportHeight()) {
 
-	// Use scrollTop because is's faster than getBoundingClientRect()
-	const documentTop = document.scrollingElement.scrollTop
-
-	const viewportHeight = window.innerHeight || window.outerHeight
-	const elemSize       = elem.getBoundingClientRect()
+	const elemSize = elem.getBoundingClientRect()
 
 	const elemAnchor     = value.match(/^[a-z]+/)[0]
 	const viewportAnchor = value.match(/[a-z]+$/)[0]
@@ -63,23 +95,11 @@ const relativeToAbsoluteValue = function(value, elem) {
 	if (viewportAnchor==='middle') y -= viewportHeight / 2
 	if (viewportAnchor==='bottom') y -= viewportHeight
 
-	if (elemAnchor==='top')    y += (elemSize.top + documentTop)
-	if (elemAnchor==='middle') y += (elemSize.top + documentTop) + elemSize.height / 2
-	if (elemAnchor==='bottom') y += (elemSize.top + documentTop) + elemSize.height
+	if (elemAnchor==='top')    y += (elemSize.top + scrollTop)
+	if (elemAnchor==='middle') y += (elemSize.top + scrollTop) + elemSize.height / 2
+	if (elemAnchor==='bottom') y += (elemSize.top + scrollTop) + elemSize.height
 
 	return `${ y }px`
-
-}
-
-/**
- * Checks if a value is relative.
- * A relative value must start and end with [a-z] and needs a '-' in the middle.
- * @param {String|Integer} value
- * @returns {Boolean} isRelative
- */
-const isRelativeValue = function(value) {
-
-	return (String(value).match(/^[a-z]+-[a-z]+$/)===null ? false : true)
 
 }
 
@@ -124,13 +144,19 @@ const validate = function(opts = {}) {
 
 }
 
-const update = function(opts, documentTop) {
+/**
+ * Updates instance props and their values.
+ * @param {Object} opts
+ * @param {?Integer} scrollTop - Pixels scrolled in document.
+ * @returns {Array} props - Updated props.
+ */
+const update = function(opts, scrollTop = getScrollTop()) {
 
 	// 100% in pixel
 	const total = opts.to.value - opts.from.value
 
 	// Pixel already scrolled
-	const current = documentTop - opts.from.value
+	const current = scrollTop - opts.from.value
 
 	// Percent already scrolled
 	let percentage = (current) / (total / 100)
@@ -158,6 +184,11 @@ const update = function(opts, documentTop) {
 
 }
 
+/**
+ * Executes a function for each prop in props.
+ * @param {Object} props - Object with props as properties.
+ * @param {Function} fn - Function to execute.
+ */
 const forEachProp = function(props, fn) {
 
 	for (const key in props) fn(props[key], key, props)
@@ -176,20 +207,19 @@ const setProp = function(style, prop) {
 }
 
 /**
- * Gets and sets new props when the user has scrolled and when there
- * are active instances.
+ * Gets and sets new props when the user has scrolled and when there are active instances.
  * This part get executed with every frame. Make sure it's performant as hell.
  * @param {Object} style - Style object.
- * @param {Object} prop - Object with a key and value.
+ * @param {?Integer} previousScrollTop
  */
-const loop = function(style, previousDocumentTop) {
+const loop = function(style, previousScrollTop) {
 
 	// Continue loop
 	const repeat = () => {
 
 		// It depends on the browser, but it turns out that closures
 		// are sometimes faster than .bind or .apply.
-		requestAnimationFrame(() => loop(style, previousDocumentTop))
+		requestAnimationFrame(() => loop(style, previousScrollTop))
 
 	}
 
@@ -199,27 +229,22 @@ const loop = function(style, previousDocumentTop) {
 	// Only continue when active instances available
 	if (activeInstances.length===0) return repeat()
 
-	// Use scrollTop because is's faster than getBoundingClientRect()
-	const documentTop = document.scrollingElement.scrollTop
+	const scrollTop = getScrollTop()
 
-	// Only continue when documentTop has changed
-	if (previousDocumentTop===documentTop) return repeat()
-	else previousDocumentTop = documentTop
+	// Only continue when scrollTop has changed
+	if (previousScrollTop===scrollTop) return repeat()
+	else previousScrollTop = scrollTop
 
 	// Get new props of each instance
-	const newProps = activeInstances.map((instance) => instance.update(documentTop))
+	const newProps = activeInstances.map((instance) => instance.update(scrollTop))
 
 	// Flatten props because each update can return multiple props.
 	// The second parameter of contact takes an array, so the line is identical to:
 	// [].concat(['1'], ['2'], ['3'])
 	const flattedProps = [].concat.apply([], newProps)
 
-	// Compare new props with old ones and only change the newbies
-	// TODO
-
 	// Set new props
-	// forEach was much slower thats why we use a simple for-loop
-	for (let i = 0; i < flattedProps.length; i++) setProp(style, flattedProps[i])
+	flattedProps.forEach((prop) => setProp(style, prop))
 
 	repeat()
 
@@ -246,9 +271,9 @@ export const create = function(opts) {
 	}
 
 	// Update props
-	const _update = (documentTop) => {
+	const _update = (scrollTop) => {
 
-		return update(opts, documentTop)
+		return update(opts, scrollTop)
 
 	}
 
