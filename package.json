@@ -1,11 +1,11 @@
 {
   "name": "basicscroll",
   "moduleName": "basicScroll",
-  "version": "3.0.0",
+  "version": "1.0.0",
   "authors": [
     "Tobias Reich <tobias@electerious.com>"
   ],
-  "description": "",
+  "description": "Standalone parallax scrolling for mobile and desktop with CSS variables.",
   "main": "dist/basicScroll.min.js",
   "keywords": [],
   "scripts": {
