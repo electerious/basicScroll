@@ -16,24 +16,35 @@
 		}
 
 		.first {
-			position: relative;
+			position: absolute;
 			top: 1000px;
-			width: 100%;
+			width: 50%;
 			text-align: center;
 			transform: translateY(var(--ty));
 			opacity: var(--o);
 			will-change: transform;
 		}
 
+		.second {
+			position: absolute;
+			top: 1000px;
+			right: 0;
+			width: 50%;
+			text-align: center;
+			transform: rotate(var(--deg));
+			will-change: transform;
+		}
+
 	</style>
 
 	<div class="first">Hello World</div>
+	<div class="second">Hello World</div>
 
 	<script src="../dist/basicScroll.min.js"></script>
 
 	<script>
 
-		const instance = basicScroll.create({
+		const first = basicScroll.create({
 			elem  : document.querySelector('.first'),
 			from  : 'top-bottom',
 			to    : 'bottom-top',
@@ -46,6 +57,18 @@
 				'--o': {
 					from : '1',
 					to   : '0'
+				}
+			}
+		}).start()
+
+		const second = basicScroll.create({
+			elem  : document.querySelector('.second'),
+			from  : 'top-bottom',
+			to    : 'bottom-top',
+			props : {
+				'--deg': {
+					from   : '0',
+					to     : '1turn'
 				}
 			}
 		}).start()
