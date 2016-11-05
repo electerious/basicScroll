@@ -172,12 +172,18 @@ const update = function(data, scrollTop = getScrollTop()) {
 	// Update each value
 	forEachProp(data.props, (prop, key) => {
 
-		const diff = prop.from.value - prop.to.value
-		const unit = prop.from.unit || prop.to.unit
+		const unit  = prop.from.unit || prop.to.unit
+		const diff  = prop.from.value - prop.to.value
+		const value = prop.from.value - (diff / 100) * percentage
+
+		// Round to avoid unprecise values.
+		// The precision of floating point computations is only as precise as the precision it uses.
+		// http://stackoverflow.com/questions/588004/is-floating-point-math-broken
+		const rounded = Math.round(value * 100) / 100
 
 		values.push({
 			key   : key,
-			value : (prop.from.value - (diff / 100) * percentage) + unit
+			value : rounded + unit
 		})
 
 	})
