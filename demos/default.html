@@ -35,10 +35,19 @@
 			will-change: transform;
 		}
 
+		.third {
+			position: absolute;
+			top: 100vh;
+			width: 100%;
+			text-align: center;
+			color: rgba(var(--c), 0, 0, 1);
+		}
+
 	</style>
 
 	<div class="first">Hello World</div>
 	<div class="second">Hello World</div>
+	<div class="third">Hello World</div>
 
 	<script src="../dist/basicScroll.min.js"></script>
 
@@ -59,7 +68,7 @@
 					to   : '0'
 				}
 			}
-		}).start()
+		})
 
 		const second = basicScroll.create({
 			elem  : document.querySelector('.second'),
@@ -71,7 +80,23 @@
 					to     : '1turn'
 				}
 			}
-		}).start()
+		})
+
+		const third = basicScroll.create({
+			elem  : document.querySelector('.third'),
+			from  : 'top-bottom',
+			to    : 'bottom-top',
+			props : {
+				'--c': {
+					from : '255',
+					to   : '0'
+				}
+			}
+		})
+
+		first.start()
+		second.start()
+		third.start()
 
 	</script>
 
