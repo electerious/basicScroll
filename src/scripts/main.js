@@ -1,4 +1,5 @@
 import parseUnit from 'parse-unit'
+import deepCopy from 'deepcopy'
 
 const instances = []
 
@@ -49,7 +50,7 @@ const isAbsoluteValue = function(value) {
 /**
  * Parses an absolute value.
  * @param {String|Integer} value
- * @returns {Object} parsedValue
+ * @returns {Object} value - Parsed value.
  */
 const parseAbsoluteValue = function(value) {
 
@@ -80,7 +81,7 @@ const isRelativeValue = function(value) {
  * @param {Node} elem - Anchor of the relative value.
  * @param {?Integer} scrollTop - Pixels scrolled in document.
  * @param {?Integer} viewportHeight - Height of the viewport.
- * @returns {String} absoluteValue
+ * @returns {String} value - Absolute value.
  */
 const relativeToAbsoluteValue = function(value, elem, scrollTop = getScrollTop(), viewportHeight = getViewportHeight()) {
 
@@ -104,33 +105,34 @@ const relativeToAbsoluteValue = function(value, elem, scrollTop = getScrollTop()
 }
 
 /**
- * Validates options and sets defaults for undefined properties.
- * @param {?Object} opts
- * @returns {Object} opts - Validated options.
+ * Validates data and sets defaults for undefined properties.
+ * @param {?Object} data
+ * @returns {Object} data - Validated data.
  */
-const validate = function(opts = {}) {
+const validate = function(data = {}) {
 
-	opts = Object.assign({}, opts)
+	// Deep copy object to avoid changes by reference
+	data = deepCopy(data)
 
-	if (opts.from==null) throw new Error('Missing property `from`')
-	if (opts.to==null)   throw new Error('Missing property `to`')
+	if (data.from==null) throw new Error('Missing property `from`')
+	if (data.to==null)   throw new Error('Missing property `to`')
 
-	if (opts.elem==null) {
+	if (data.elem==null) {
 
-		if (isAbsoluteValue(opts.from)===false) throw new Error('Property `from` must be a absolute value when no `elem` has been provided')
-		if (isAbsoluteValue(opts.to)===false)   throw new Error('Property `to` must be a absolute value when no `elem` has been provided')
+		if (isAbsoluteValue(data.from)===false) throw new Error('Property `from` must be a absolute value when no `elem` has been provided')
+		if (isAbsoluteValue(data.to)===false)   throw new Error('Property `to` must be a absolute value when no `elem` has been provided')
 
 	} else {
 
-		if (isRelativeValue(opts.from)===true) opts.from = relativeToAbsoluteValue(opts.from, opts.elem)
-		if (isRelativeValue(opts.to)===true)   opts.to   = relativeToAbsoluteValue(opts.to, opts.elem)
+		if (isRelativeValue(data.from)===true) data.from = relativeToAbsoluteValue(data.from, data.elem)
+		if (isRelativeValue(data.to)===true)   data.to   = relativeToAbsoluteValue(data.to, data.elem)
 
 	}
 
-	opts.from = parseAbsoluteValue(opts.from)
-	opts.to   = parseAbsoluteValue(opts.to)
+	data.from = parseAbsoluteValue(data.from)
+	data.to   = parseAbsoluteValue(data.to)
 
-	forEachProp(opts.props, (prop) => {
+	forEachProp(data.props, (prop) => {
 
 		if (isAbsoluteValue(prop.from)===false) throw new Error('Property `from` of prop must be a absolute value')
 		if (isAbsoluteValue(prop.to)===false)   throw new Error('Property `from` of prop must be a absolute value')
@@ -140,23 +142,23 @@ const validate = function(opts = {}) {
 
 	})
 
-	return opts
+	return data
 
 }
 
 /**
  * Updates instance props and their values.
- * @param {Object} opts
+ * @param {Object} data
  * @param {?Integer} scrollTop - Pixels scrolled in document.
  * @returns {Array} props - Updated props.
  */
-const update = function(opts, scrollTop = getScrollTop()) {
+const update = function(data, scrollTop = getScrollTop()) {
 
 	// 100% in pixel
-	const total = opts.to.value - opts.from.value
+	const total = data.to.value - data.from.value
 
 	// Pixel already scrolled
-	const current = scrollTop - opts.from.value
+	const current = scrollTop - data.from.value
 
 	// Percent already scrolled
 	let percentage = (current) / (total / 100)
@@ -168,7 +170,7 @@ const update = function(opts, scrollTop = getScrollTop()) {
 	const values = []
 
 	// Update each value
-	forEachProp(opts.props, (prop, key) => {
+	forEachProp(data.props, (prop, key) => {
 
 		const diff = prop.from.value - prop.to.value
 		const unit = prop.from.unit || prop.to.unit
@@ -252,13 +254,13 @@ const loop = function(style, previousScrollTop) {
 
 /**
  * Creats a new instance.
- * @param {Object} opts
+ * @param {Object} data
  * @returns {Object} instance
  */
-export const create = function(opts) {
+export const create = function(data) {
 
-	// Validate options
-	opts = validate(opts)
+	// Store the parsed data
+	let _data = null
 
 	// Store if instance is started or stopped
 	let active = false
@@ -270,10 +272,17 @@ export const create = function(opts) {
 
 	}
 
+	// Parses and calculates data
+	const _calculate = function() {
+
+		_data = validate(data)
+
+	}
+
 	// Update props
 	const _update = (scrollTop) => {
 
-		return update(opts, scrollTop)
+		return update(_data, scrollTop)
 
 	}
 
@@ -294,14 +303,18 @@ export const create = function(opts) {
 	// Assign instance to a variable so the instance can be used
 	// elsewhere in the current function
 	const instance = {
-		isActive : _isActive,
-		update   : _update,
-		start    : _start,
-		stop     : _stop
+		isActive  : _isActive,
+		calculate : _calculate,
+		update    : _update,
+		start     : _start,
+		stop      : _stop
 	}
 
 	// Store instance in global array
 	instances.push(instance)
+
+	// Calculate data for the first time
+	instance.calculate()
 
 	return instance
 
