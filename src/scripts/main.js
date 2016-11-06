@@ -258,7 +258,7 @@ const loop = function(style, previousScrollTop) {
 	else previousScrollTop = scrollTop
 
 	// Get new props of each instance
-	const newProps = activeInstances.map((instance) => instance.update(scrollTop))
+	const newProps = activeInstances.map((instance) => update(instance.getData(), scrollTop))
 
 	// Flatten props because each update can return multiple props.
 	// The second parameter of contact takes an array, so the line is identical to:
@@ -292,6 +292,13 @@ export const create = function(data) {
 
 	}
 
+	// Returns the parsed and calculated data
+	const _getData = function() {
+
+		return _data
+
+	}
+
 	// Parses and calculates data
 	const _calculate = function() {
 
@@ -300,9 +307,15 @@ export const create = function(data) {
 	}
 
 	// Update props
-	const _update = (scrollTop) => {
+	const _update = () => {
 
-		return update(_data, scrollTop)
+		// Get new props of each instance
+		const newProps = update(_data)
+
+		// Set new props
+		newProps.forEach((prop) => setProp(prop))
+
+		return newProps
 
 	}
 
@@ -324,6 +337,7 @@ export const create = function(data) {
 	// elsewhere in the current function
 	const instance = {
 		isActive  : _isActive,
+		getData   : _getData,
 		calculate : _calculate,
 		update    : _update,
 		start     : _start,
