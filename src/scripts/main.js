@@ -220,12 +220,11 @@ const forEachProp = function(props, fn) {
 
 /**
  * Adds a property with the specified name and value to a given style object.
- * @param {Object} style - Style object.
  * @param {Object} prop - Object with a key and value.
  */
-const setProp = function(style, prop) {
+const setProp = function(prop) {
 
-	style.setProperty(prop.key, prop.value)
+	document.documentElement.style.setProperty(prop.key, prop.value)
 
 }
 
@@ -267,7 +266,7 @@ const loop = function(style, previousScrollTop) {
 	const flattedProps = [].concat.apply([], newProps)
 
 	// Set new props
-	flattedProps.forEach((prop) => setProp(style, prop))
+	flattedProps.forEach((prop) => setProp(prop))
 
 	repeat()
 
@@ -342,4 +341,4 @@ export const create = function(data) {
 }
 
 // Start to loop
-loop(document.documentElement.style)
+loop()
