@@ -83,11 +83,15 @@ instance.start()
 
 ```css
 .element {
-	/* Use the same CSS variable as specified in out instance. */
+	/*
+	 * Use the same CSS variable as specified in out instance.
+	 */
 	opacity: var(--opacity);
-	/* The will-change CSS property provides a way for authors to hint browsers about the kind of changes
+	/*
+	 * The will-change CSS property provides a way for authors to hint browsers about the kind of changes
 	 * to be expected on an element, so that the browser can setup appropriate optimizations ahead of time
-	 * before the element is actually changed. */
+	 * before the element is actually changed.
+	 */
 	will-change: opacity;
 }
 ```
