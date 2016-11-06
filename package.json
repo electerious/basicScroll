@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "deepcopy": "^0.6.3",
+    "eases": "^1.0.8",
     "parse-unit": "^1.0.1"
   }
 }

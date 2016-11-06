@@ -60,8 +60,7 @@
 			props : {
 				'--ty': {
 					from   : '0px',
-					to     : '100px',
-					timing : 'ease'
+					to     : '100px'
 				},
 				'--o': {
 					from : '1',
@@ -72,12 +71,13 @@
 
 		const second = basicScroll.create({
 			elem  : document.querySelector('.second'),
-			from  : 'top-bottom',
+			from  : 'top-middle',
 			to    : 'bottom-top',
 			props : {
 				'--deg': {
 					from   : '0',
-					to     : '1turn'
+					to     : '1turn',
+					timing : 'elasticOut'
 				}
 			}
 		})

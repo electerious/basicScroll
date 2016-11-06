@@ -1,5 +1,6 @@
 import parseUnit from 'parse-unit'
 import deepCopy from 'deepcopy'
+import eases from 'eases'
 
 const instances = []
 
@@ -140,6 +141,11 @@ const validate = function(data = {}) {
 		prop.from = parseAbsoluteValue(prop.from)
 		prop.to   = parseAbsoluteValue(prop.to)
 
+		if (typeof prop.timing==='string' && eases[prop.timing]==null) throw new Error('Unknown timing for property `timing` of prop')
+
+		if (prop.timing==null)             prop.timing = eases['linear']
+		if (typeof prop.timing==='string') prop.timing = eases[prop.timing]
+
 	})
 
 	return data
@@ -172,9 +178,18 @@ const update = function(data, scrollTop = getScrollTop()) {
 	// Update each value
 	forEachProp(data.props, (prop, key) => {
 
-		const unit  = prop.from.unit || prop.to.unit
+		// Use the unit of from OR to. It's valid to animate from '0' to '100px' and
+		// '0' should be treated as 'px', too. Unit will be an empty string when no unit given.
+		const unit = prop.from.unit || prop.to.unit
+
+		// The value that should be interpolated
 		const diff  = prop.from.value - prop.to.value
-		const value = prop.from.value - (diff / 100) * percentage
+
+		// All easing functions only remap a time value, and all have the same signature.
+		// Typically a value between 0 and 1, and it returns a new float that has been eased.
+		const time = prop.timing(percentage / 100)
+
+		const value = prop.from.value - diff * time
 
 		// Round to avoid unprecise values.
 		// The precision of floating point computations is only as precise as the precision it uses.
