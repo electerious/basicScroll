@@ -133,7 +133,9 @@ const validate = function(data = {}) {
 	data.from = parseAbsoluteValue(data.from)
 	data.to   = parseAbsoluteValue(data.to)
 
-	forEachProp(data.props, (prop) => {
+	Object.keys(data.props).forEach((key) => {
+
+		const prop = data.props[key]
 
 		if (isAbsoluteValue(prop.from)===false) throw new Error('Property `from` of prop must be a absolute value')
 		if (isAbsoluteValue(prop.to)===false)   throw new Error('Property `from` of prop must be a absolute value')
@@ -176,7 +178,9 @@ const update = function(data, scrollTop = getScrollTop()) {
 	const values = []
 
 	// Update each value
-	forEachProp(data.props, (prop, key) => {
+	Object.keys(data.props).forEach((key) => {
+
+		const prop = data.props[key]
 
 		// Use the unit of from OR to. It's valid to animate from '0' to '100px' and
 		// '0' should be treated as 'px', too. Unit will be an empty string when no unit given.
@@ -204,17 +208,6 @@ const update = function(data, scrollTop = getScrollTop()) {
 	})
 
 	return values
-
-}
-
-/**
- * Executes a function for each prop in props.
- * @param {Object} props - Object with props as properties.
- * @param {Function} fn - Function to execute.
- */
-const forEachProp = function(props, fn) {
-
-	for (const key in props) fn(props[key], key, props)
 
 }
 
