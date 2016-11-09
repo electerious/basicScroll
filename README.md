@@ -106,7 +106,7 @@ Be sure to assign your instance to a variable. Using your instance, you can…
 
 * …start and stop the animation.
 * …check if the instance is active.
-* …get the current properties.
+* …get the current props.
 
 Examples:
 
@@ -138,6 +138,20 @@ const instance = basicScroll.create({
 })
 ```
 
+```js
+const instance = basicScroll.create({
+	elem    : document.querySelector('.element'),
+	from    : 'top-middle',
+	to      : 'bottom-middle',
+	inside  : (instance, percentage) => {
+		console.log('viewport is inside from and to')
+	},
+	outside : (instance, percentage) => {
+		console.log('viewport is outside from and to')
+	}
+})
+```
+
 Parameters:
 
 - `data` `{Object}` An object of [data](#data).
@@ -152,9 +166,9 @@ Each basicScroll instance has a handful of handy functions. Below are all of the
 
 ### .start()
 
-Start to animate the instance. basicScroll will track the current scroll position and adjust the props of the instance accordingly.
+Starts to animate the instance. basicScroll will track the scroll position and adjust the [props](#props) of the instance accordingly. An update will be performed only when the scroll position has changed.
 
-Examples:
+Example:
 
 ```js
 instance.start()
@@ -162,10 +176,255 @@ instance.start()
 
 ### .stop()
 
-Stop to animate the instance. All props of the instance will keep their last value.
+Stops to animate the instance. All [props](#props) of the instance will keep their last value.
+
+Example:
+
+```js
+instance.stop()
+```
+
+### .update()
+
+Triggers an update of an instance, even when the instance is currently stopped.
+
+Example:
+
+```js
+instance.update()
+```
+
+Returns:
+
+- `{Array}` New props. An array of objects, each with a key and value.
+
+### .calculate()
+
+Converts the [start and stop position](#start-and-stop-position) of the instance to absolute values. basicScroll relies on those values to start and stop the animation at the right position. It runs the calculation once during the instance creation. `.calculate()` should be called when elements have altered their position or when the size of the site/viewport has changed.
+
+Example:
+
+```js
+instance.calculate()
+```
+
+### .isActive()
+
+Returns `true` when the instance is started and `false` when the instance is stopped.
+
+Example:
+
+```js
+instance.isActive()
+```
+
+Returns:
+
+- `{Boolean}`
+
+### .getData()
+
+Returns calculated data. More or less a parsed version of the [data](#data) used for the instance creation. The data might change when calling the [calculate](#calculate) function.
+
+Example:
+
+```js
+instance.getData()
+```
+
+Returns:
+
+- `{Object}` Parsed [data](#data).
+
+## Data
+
+The data object can include the following properties:
+
+```js
+{
+	/*
+	 * DOM Element/Node.
+	 */
+	elem: null,
+	/*
+	 * Start and stop position.
+	 */
+	from  : null,
+ 	to    : null,
+	/*
+	 * Callback functions.
+	 */
+	inside  : (instance, percentage) => {},
+	outside : (instance, percentage) => {},
+	/*
+	 * Props.
+	 */
+	props: {
+		/*
+		 * Property name / CSS Custom Properties.
+		 */
+		'--name': {
+			/*
+			 * Start and end values.
+			 */
+			from : null,
+			to   : null,
+			/*
+			 * Animation timing.
+			 */
+			timing: 'ease'
+		}
+	}
+}
+```
+
+### DOM Element/Node
+
+Type: `Node` Default: `null` Optional: `true`
+
+A DOM Element/Node.
+
+The position and size of the element will be used to convert the [start and stop position](#start-and-stop-position) to absolute values. How else is basicScroll supposed to know when to start and stop an animation with relative values?
+
+You can skip the property when using absolute values.
+
+Example:
+
+```js
+{
+	elem: document.querySelector('.element')
+	/* ... */
+}
+```
+
+### Start and stop position
+
+Type: `Integer|String` Default: `null` Optional: `false`
+
+basicScroll starts to animate the [props](#props) when the scroll position is above `from` and below `to`. Absolute and relative values are allowed. Relative values require a [DOM Element/Node](#dom-elementnode).
 
 Examples:
 
 ```js
-instance.stop()
+{
+	/* ... */
+	from : '0px',
+	to   : '100px',
+	/* ... */
+}
+```
+
+```js
+{
+	/* ... */
+	from : 'top-middle',
+	to   : 'bottom-middle',
+	/* ... */
+}
+```
+
+### Callback functions
+
+Type: `Function` Default: `() => {}` Optional: `true`
+
+- The `inside` callback executes when the user scrolls and the viewport is within the given [start and stop position](#start-and-stop-position).
+- The `outside` callback executes when the user scrolls and the viewport is outside the given [start and stop position](#start-and-stop-position).
+
+Both callbacks receive the current instance and a percentage:
+
+- < 0% percent = Scroll position is below `from`
+- = 0% percent = Scroll position is `from`
+- = 100% percent = Scroll position is `to`
+- > 100% percent = Scroll position is above `from`
+
+Example:
+
+```js
+{
+	/* ... */
+	inside  : (instance, percentage) => {},
+	outside : (instance, percentage) => {},
+	/* ... */
+}
+```
+
+### Props
+
+Type: `Object` Default: `{}` Optional: `true`
+
+Values to animate when the scroll position changes.
+
+Each prop of the object represents a CSS property or CSS Custom Property (CSS variables). Custom CSS properties always start with two dashes. A prop with the name `--name` is accessible with `var(--name)` in CSS.
+
+More about [CSS custom properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_variables).
+
+Example:
+
+```js
+{
+	/* ... */
+	props: {
+		'--one-variable': { /* ... */ },
+		'--another-variable': { /* ... */ }
+	}
+}
+```
+
+### Start and end values
+
+Type: `Integer|String` Default: `null` Optional: `false`
+
+Works with all kinds of units. basicScroll uses the unit of `to` when `from` has no unit.
+
+Examples:
+
+```js
+'--name': {
+	/* ... */
+	from : '0',
+	to   : '100px',
+	/* ... */
+}
+```
+
+```js
+'--name': {
+	/* ... */
+	from : '50%',
+	to   : '100%',
+	/* ... */
+}
+```
+
+```js
+'--name': {
+	/* ... */
+	from : '0',
+	to   : '1turn',
+	/* ... */
+}
+```
+
+### Animation timing
+
+Type: `String|Function` Default: `ease` Optional: `true`
+
+A known timing or a custom function. Easing functions get just one argument, which is a value between 0 and 1 (the percentage of how much of the animation is done). The function should return a value between 0 and 1 as well, but for some timings a value less than 0 or greater than 1 is just fine.
+
+Known timings: `backInOut`, `backIn`, `backOut`, `bounceInOut`, `bounceIn`, `bounceOut`, `circInOut`, `circIn`, `circOut`, `cubicInOut`, `cubicIn`, `cubicOut`, `elasticInOut`, `elasticIn`, `elasticOut`, `expoInOut`, `expoIn`, `expoOut`, `linear`, `quadInOut`, `quadIn`, `quadOut`, `quartInOut`, `quartIn`, `quartOut`, `quintInOut`, `quintIn`, `quintOut`, `sineInOut`, `sineIn`, `sineOut`
+
+Examples:
+
+```js
+'--name': {
+	/* ... */
+	timing: 'circInOut'
+}
+```
+
+```js
+'--name': {
+	/* ... */
+	timing: (t) => t * t
+}
 ```
