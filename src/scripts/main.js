@@ -118,6 +118,12 @@ const validate = function(data = {}) {
 	if (data.from==null) throw new Error('Missing property `from`')
 	if (data.to==null)   throw new Error('Missing property `to`')
 
+	if (data.inside==null)  data.inside = () => {}
+	if (data.outside==null) data.outside = () => {}
+
+	if (typeof data.inside!=='function')  throw new Error('Property `inside` must be a function')
+	if (typeof data.outside!=='function') throw new Error('Property `outside` must be a function')
+
 	if (data.elem==null) {
 
 		if (isAbsoluteValue(data.from)===false) throw new Error('Property `from` must be a absolute value when no `elem` has been provided')
@@ -132,6 +138,8 @@ const validate = function(data = {}) {
 
 	data.from = parseAbsoluteValue(data.from)
 	data.to   = parseAbsoluteValue(data.to)
+
+	if (data.props==null) data.props = {}
 
 	Object.keys(data.props).forEach((key) => {
 
@@ -156,11 +164,13 @@ const validate = function(data = {}) {
 
 /**
  * Updates instance props and their values.
- * @param {Object} data
+ * @param {Object} instance
  * @param {?Integer} scrollTop - Pixels scrolled in document.
  * @returns {Array} props - Updated props.
  */
-const update = function(data, scrollTop = getScrollTop()) {
+const update = function(instance, scrollTop = getScrollTop()) {
+
+	const data = instance.getData()
 
 	// 100% in pixel
 	const total = data.to.value - data.from.value
@@ -169,10 +179,19 @@ const update = function(data, scrollTop = getScrollTop()) {
 	const current = scrollTop - data.from.value
 
 	// Percent already scrolled
-	let percentage = (current) / (total / 100)
+	let percentage = current / (total / 100)
+
+	// Use unnormalized percentage to check if the viewport is between from and to.
+	// Would always return true when using the normalize percentage.
+	const isInside  = (percentage>=0 && percentage<=100)
+	const isOutside = (percentage<0 || percentage>100)
+
+	// Execute callbacks
+	if (isInside===true)  data.inside(instance, percentage)
+	if (isOutside===true) data.outside(instance, percentage)
 
 	// Normalize percentage
-	if (percentage<=0)  percentage = 0
+	if (percentage<0)   percentage = 0
 	if (percentage>100) percentage = 100
 
 	const values = []
@@ -251,7 +270,7 @@ const loop = function(style, previousScrollTop) {
 	else previousScrollTop = scrollTop
 
 	// Get new props of each instance
-	const newProps = activeInstances.map((instance) => update(instance.getData(), scrollTop))
+	const newProps = activeInstances.map((instance) => update(instance, scrollTop))
 
 	// Flatten props because each update can return multiple props.
 	// The second parameter of contact takes an array, so the line is identical to:
@@ -303,7 +322,7 @@ export const create = function(data) {
 	const _update = () => {
 
 		// Get new props of each instance
-		const newProps = update(_data)
+		const newProps = update(instance)
 
 		// Set new props
 		newProps.forEach((prop) => setProp(prop))

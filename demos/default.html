@@ -43,11 +43,19 @@
 			color: rgba(var(--c), 0, 0, 1);
 		}
 
+		.fourth {
+			position: absolute;
+			top: 2000px;
+			width: 100%;
+			text-align: center;
+		}
+
 	</style>
 
 	<div class="first">Hello World</div>
 	<div class="second">Hello World</div>
 	<div class="third">Hello World</div>
+	<div class="fourth">Hello World</div>
 
 	<script src="../dist/basicScroll.min.js"></script>
 
@@ -94,9 +102,22 @@
 			}
 		})
 
+		const fourth = basicScroll.create({
+			elem    : document.querySelector('.fourth'),
+			from    : 'top-middle',
+			to      : 'bottom-middle',
+			inside  : (instance, percentage) => {
+				console.log('fourth is inside')
+			},
+			outside : (instance, percentage) => {
+				console.log('fourth is outside')
+			}
+		})
+
 		first.start()
 		second.start()
 		third.start()
+		fourth.start()
 
 	</script>
 
