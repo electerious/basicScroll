@@ -12,112 +12,128 @@
 
 		body {
 			width: 100%;
-			height: 8000px;
+			height: 300vh;
 		}
 
-		.first {
-			position: absolute;
-			top: 1000px;
-			width: 50%;
-			text-align: center;
-			transform: translateY(var(--ty));
-			opacity: var(--o);
+		.container {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			width: 100%;
+		}
+
+		.container:nth-child(1) { height: 200vh; }
+		.container:nth-child(2) { height: 0; }
+
+		.box {
+			padding: 1em 2em;
+			margin: 0 .5em;
+			background: #ddd;
 			will-change: transform;
 		}
 
-		.second {
-			position: absolute;
-			top: 1000px;
-			right: 0;
-			width: 50%;
-			text-align: center;
-			transform: rotate(var(--deg));
-			will-change: transform;
+		.box::before {
+			content: attr(data-timing);
 		}
 
-		.third {
-			position: absolute;
-			top: 100vh;
-			width: 100%;
-			text-align: center;
-			color: rgba(var(--c), 0, 0, 1);
-		}
+		.easeBox:nth-child(1) { transform: translateY(var(--ty0)); }
+		.easeBox:nth-child(2) { transform: translateY(var(--ty1)); }
+		.easeBox:nth-child(3) { transform: translateY(var(--ty2)); }
+		.easeBox:nth-child(4) { transform: translateY(var(--ty3)); }
+		.easeBox:nth-child(5) { transform: translateY(var(--ty4)); }
 
-		.fourth {
-			position: absolute;
-			top: 2000px;
-			width: 100%;
-			text-align: center;
-		}
+		.rotateBox { transform: rotate(var(--r)); }
+		.fadeBox { opacity: var(--o); }
 
 	</style>
 
-	<div class="first">Hello World</div>
-	<div class="second">Hello World</div>
-	<div class="third">Hello World</div>
-	<div class="fourth">Hello World</div>
+	<div class="container">
+		<div class="box easeBox" data-timing="sineInOut"></div>
+		<div class="box easeBox" data-timing="backInOut"></div>
+		<div class="box easeBox" data-timing="circIn"></div>
+		<div class="box easeBox" data-timing="quintOut"></div>
+		<div class="box easeBox" data-timing="expoIn"></div>
+	</div>
+
+	<div class="container">
+		<div class="box rotateBox">rotate</div>
+		<div class="box fadeBox">fade</div>
+	</div>
 
 	<script src="../dist/basicScroll.min.js"></script>
 
 	<script>
 
-		const first = basicScroll.create({
-			elem  : document.querySelector('.first'),
-			from  : 'top-bottom',
-			to    : 'bottom-top',
-			props : {
-				'--ty': {
-					from   : '0',
-					to     : '100px'
-				},
-				'--o': {
-					from : '1',
-					to   : '0'
+		const easeBoxes = []
+
+		// Create an animation for each ease box. Each with a different timing.
+		Array.prototype.forEach.call(document.querySelectorAll('.easeBox'), function(elem, i) {
+
+			// Get the timing from the data attribute.
+			// You can also hard-code the timing, but for the demo it's easier this way.
+			const timing = elem.getAttribute('data-timing')
+
+			// Crate an instance for the current element and store the instance in an array.
+			// We start the animation later using the instances from the array.
+			easeBoxes.push(basicScroll.create({
+				elem  : elem,
+				from  : 'middle-bottom',
+				to    : 'bottom-top',
+				props : {
+					['--ty' + i]: {
+						from   : '0',
+						to     : '100px',
+						timing : timing
+					}
 				}
-			}
+			}))
+
 		})
 
-		const second = basicScroll.create({
-			elem  : document.querySelector('.second'),
+		const rotateBox = basicScroll.create({
+			elem  : document.querySelector('.rotateBox'),
 			from  : 'top-middle',
-			to    : 'bottom-top',
+			to    : 'top-top',
 			props : {
-				'--deg': {
-					from   : '0',
-					to     : '1turn',
-					timing : 'elasticOut'
+				'--r': {
+					from : '0',
+					to   : '1turn'
 				}
 			}
 		})
 
-		const third = basicScroll.create({
-			elem  : document.querySelector('.third'),
-			from  : 'top-bottom',
-			to    : 'bottom-top',
-			props : {
-				'--c': {
-					from : '255',
-					to   : '0'
-				}
-			}
-		})
-
-		const fourth = basicScroll.create({
-			elem    : document.querySelector('.fourth'),
-			from    : 'top-middle',
-			to      : 'bottom-middle',
+		const fadeBox = basicScroll.create({
+			elem    : document.querySelector('.fadeBox'),
+			from    : 'bottom-bottom',
+			to      : 'top-middle',
 			inside  : (instance, percentage) => {
-				console.log('fourth is inside')
+				console.log('fadeBox is animating')
 			},
 			outside : (instance, percentage) => {
-				console.log('fourth is outside')
+				console.log('fadeBox is not animating')
+			},
+			props : {
+				'--o': {
+					from : '0',
+					to   : '1'
+				}
 			}
 		})
 
-		first.start()
-		second.start()
-		third.start()
-		fourth.start()
+		// Start all instances
+		rotateBox.start()
+		fadeBox.start()
+		easeBoxes.forEach((easeBox) => easeBox.start())
+
+		// Recalculate each position when the viewport size changes.
+		// Debounce this function in production to avoid unnecessary calculations.
+		window.onresize = function() {
+
+			rotateBox.calculate()
+			fadeBox.calculate()
+			easeBoxes.forEach((easeBox) => easeBox.calculate())
+
+		}
 
 	</script>
 
