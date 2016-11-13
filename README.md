@@ -18,7 +18,7 @@ basicScroll allows you to change CSS variables depending on the scroll position.
 
 | Name | Description | Link |
 |:-----------|:------------|:------------|
-| Default | Includes all features. | [Demo](demos/default.html) |
+| Default | Includes all features. | [Try it on CodePen](http://codepen.io/electerious/pen/QGNxxx) |
 
 ## Features
 
