@@ -272,7 +272,11 @@ The data object can include the following properties:
 			/*
 			 * Animation timing.
 			 */
-			timing: 'ease'
+			timing: 'ease',
+			/*
+			 * Direct mode.
+			 */
+			direct: false
 		}
 	}
 }
@@ -427,4 +431,26 @@ Examples:
 	/* ... */
 	timing: (t) => t * t
 }
+```
+
+### Direct mode
+
+Type: `Boolean` Default: `false` Optional: `true`
+
+basicScroll applies all [props](#props) globally by default. This way you can use variables everywhere in your CSS, even when the instance tracks just one element. Set `direct` to `true` to apply styles directly to the [DOM Element/Node](#dom-elementnode). Setting `direct` to `true` also allows you to animate CSS properties, not just CSS variables.
+
+Examples:
+
+```html
+<!-- direct: false -->
+<html style="--name: 0;">
+	<div class="element"></div>
+</html>
+```
+
+```html
+<!-- direct: true -->
+<html>
+	<div class="element" style="--name: 0;"></div>
+</html>
 ```

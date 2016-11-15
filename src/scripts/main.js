@@ -156,6 +156,10 @@ const validate = function(data = {}) {
 		if (prop.timing==null)             prop.timing = eases['linear']
 		if (typeof prop.timing==='string') prop.timing = eases[prop.timing]
 
+		if (prop.direct===true && data.elem==null) throw new Error('Property `elem` required when `direct` is true')
+
+		if (prop.direct!==true) prop.direct = false
+
 	})
 
 	return data
@@ -201,6 +205,10 @@ const update = function(instance, scrollTop = getScrollTop()) {
 
 		const prop = data.props[key]
 
+		// Apply styles directly to element when direct is true.
+		// Apply them globally when direct is false.
+		const elem = prop.direct===true ? data.elem : document.documentElement
+
 		// Use the unit of from OR to. It's valid to animate from '0' to '100px' and
 		// '0' should be treated as 'px', too. Unit will be an empty string when no unit given.
 		const unit = prop.from.unit || prop.to.unit
@@ -220,6 +228,7 @@ const update = function(instance, scrollTop = getScrollTop()) {
 		const rounded = Math.round(value * 100) / 100
 
 		values.push({
+			elem  : elem,
 			key   : key,
 			value : rounded + unit
 		})
@@ -232,11 +241,12 @@ const update = function(instance, scrollTop = getScrollTop()) {
 
 /**
  * Adds a property with the specified name and value to a given style object.
+ * @param {Node} elem - Styles will be applied to this element.
  * @param {Object} prop - Object with a key and value.
  */
-const setProp = function(prop) {
+const setProp = function(elem, prop) {
 
-	document.documentElement.style.setProperty(prop.key, prop.value)
+	elem.style.setProperty(prop.key, prop.value)
 
 }
 
@@ -278,7 +288,7 @@ const loop = function(style, previousScrollTop) {
 	const flattedProps = [].concat.apply([], newProps)
 
 	// Set new props
-	flattedProps.forEach((prop) => setProp(prop))
+	flattedProps.forEach((prop) => setProp(prop.elem, prop))
 
 	repeat()
 

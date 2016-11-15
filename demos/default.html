@@ -36,12 +36,7 @@
 			content: attr(data-timing);
 		}
 
-		.easeBox:nth-child(1) { transform: translateY(var(--ty0)); }
-		.easeBox:nth-child(2) { transform: translateY(var(--ty1)); }
-		.easeBox:nth-child(3) { transform: translateY(var(--ty2)); }
-		.easeBox:nth-child(4) { transform: translateY(var(--ty3)); }
-		.easeBox:nth-child(5) { transform: translateY(var(--ty4)); }
-
+		.easeBox { transform: translateY(var(--ty)); }
 		.rotateBox { transform: rotate(var(--r)); }
 		.fadeBox { opacity: var(--o); }
 
@@ -80,10 +75,11 @@
 				from  : 'middle-bottom',
 				to    : 'bottom-top',
 				props : {
-					['--ty' + i]: {
+					'--ty': {
 						from   : '0',
 						to     : '100px',
-						timing : timing
+						timing : timing,
+						direct : true
 					}
 				}
 			}))
