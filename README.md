@@ -407,7 +407,7 @@ Examples:
 
 ### Animation timing
 
-Type: `String|Function` Default: `ease` Optional: `true`
+Type: `String|Function` Default: `linear` Optional: `true`
 
 A known timing or a custom function. Easing functions get just one argument, which is a value between 0 and 1 (the percentage of how much of the animation is done). The function should return a value between 0 and 1 as well, but for some timings a value less than 0 or greater than 1 is just fine.
 
