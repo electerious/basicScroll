@@ -13,6 +13,7 @@ basicScroll allows you to change CSS variables depending on the scroll position.
 - [API](#api)
 - [Instance API](#instance-api)
 - [Data](#data)
+- [Tips](#tips)
 
 ## Demos
 
@@ -454,3 +455,11 @@ Examples:
 	<div class="element" style="--name: 0;"></div>
 </html>
 ```
+
+## Tips
+
+- Only animate `transform` and `opacity` and use `will-change` to [hint browsers about the kind of changes](https://developer.mozilla.org/de/docs/Web/CSS/will-change). This way the browser can setup appropriate optimizations ahead of time before the element is actually changed.
+- Keep the amount of instances low. More instances means more checks, calculations and style changes.
+- Don't animate everything at once and don't animate too many properties. Browsers don't like this.
+- Smooth animations by adding a short transition to the element: `transform: translateY(var(--ty)); transition: transform .1s`.
+- basicScroll applies all [props](#props) globally by default. Try to reuse variables across elements instead of creating more instances.
