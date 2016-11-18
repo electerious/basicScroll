@@ -198,10 +198,8 @@ const update = function(instance, scrollTop = getScrollTop()) {
 	if (percentage<0)   percentage = 0
 	if (percentage>100) percentage = 100
 
-	const values = []
-
-	// Update each value
-	Object.keys(data.props).forEach((key) => {
+	// Return an array with all updated props
+	return Object.keys(data.props).map((key) => {
 
 		const prop = data.props[key]
 
@@ -227,11 +225,11 @@ const update = function(instance, scrollTop = getScrollTop()) {
 		// http://stackoverflow.com/questions/588004/is-floating-point-math-broken
 		const rounded = Math.round(value * 100) / 100
 
-		values.push({
+		return {
 			elem  : elem,
 			key   : key,
 			value : rounded + unit
-		})
+		}
 
 	})
 
