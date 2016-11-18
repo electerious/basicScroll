@@ -1,5 +1,7 @@
 # basicScroll
 
+[![Dependencies](https://david-dm.org/electerious/basicscroll.svg)](https://david-dm.org/electerious/basicscroll.svg#info=dependencies) [![Donate via Flattr](https://img.shields.io/badge/flattr-donate-009cde.svg)](https://flattr.com/profile/electerious) [![Donate via PayPal](https://img.shields.io/badge/paypal-donate-009cde.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CYKBESW577YWE)
+
 Standalone parallax scrolling for mobile and desktop with CSS variables.
 
 basicScroll allows you to change CSS variables depending on the scroll position. Use the variables directly in your CSS to animate whatever you want. Highly inspired by [skrollr](https://github.com/Prinzhorn/skrollr) and [Reactive Animations with CSS Variables](http://slides.com/davidkhourshid/reactanim#/).
