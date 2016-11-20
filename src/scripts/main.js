@@ -22,7 +22,7 @@ const getActiveInstances = function(instances) {
 const getScrollTop = function() {
 
 	// Use scrollTop because is's faster than getBoundingClientRect()
-	return document.scrollingElement.scrollTop
+	return (document.scrollingElement || document.documentElement).scrollTop
 
 }
 
