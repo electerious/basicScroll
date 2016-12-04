@@ -102,16 +102,12 @@
 			elem    : document.querySelector('.fadeBox'),
 			from    : 'bottom-bottom',
 			to      : 'top-middle',
-			inside  : (instance, percentage) => {
-				console.log('fadeBox is animating')
-			},
-			outside : (instance, percentage) => {
-				console.log('fadeBox is not animating')
-			},
-			props : {
+			inside  : (instance, percentage) => console.log('fadeBox is animating'),
+			outside : (instance, percentage) => console.log('fadeBox is not animating'),
+			props   : {
 				'--o': {
-					from : '0',
-					to   : '1'
+					from : '.01',
+					to   : '.99'
 				}
 			}
 		})

@@ -67,7 +67,9 @@ const basicScroll = require('basicScroll')
 
 ## Usage
 
-This demo shows how to to change the opacity of an element when the user scrolls. The element starts to fade as soon as the top of the element reaches the bottom of the viewport. A opacity of `0` is reached when the middle of the element is in the middle of the viewport.
+This demo shows how to to change the opacity of an element when the user scrolls. The element starts to fade as soon as the top of the element reaches the bottom of the viewport. A opacity of `.99` is reached when the middle of the element is in the middle of the viewport.
+
+Tip: Animating from `.01` to `.99` avoids the repaints that normally occur when the element changes from fully transparent to translucent and from translucent to fully visible.
 
 ```js
 const instance = basicScroll.create({
@@ -76,8 +78,8 @@ const instance = basicScroll.create({
 	to    : 'middle-middle',
 	props : {
 		'--opacity': {
-			from : '1',
-			to   : '0'
+			from : '.01',
+			to   : '.99'
 		}
 	}
 })
