@@ -280,10 +280,8 @@ const loop = function(style, previousScrollTop) {
 	// Get new props of each instance
 	const newProps = activeInstances.map((instance) => update(instance, scrollTop))
 
-	// Flatten props because each update can return multiple props.
-	// The second parameter of contact takes an array, so the line is identical to:
-	// [].concat(['1'], ['2'], ['3'])
-	const flattedProps = [].concat.apply([], newProps)
+	// Flatten props because each update can return multiple props
+	const flattedProps = [].concat(...newProps)
 
 	// Set new props
 	flattedProps.forEach((prop) => setProp(prop.elem, prop))
