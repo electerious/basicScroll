@@ -331,7 +331,7 @@ export const create = function(data) {
 		const newProps = update(instance)
 
 		// Set new props
-		newProps.forEach((prop) => setProp(prop))
+		newProps.forEach((prop) => setProp(prop.elem, prop))
 
 		return newProps
 
