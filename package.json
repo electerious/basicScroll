@@ -27,8 +27,8 @@
     "gulp": "^3.9.1"
   },
   "dependencies": {
-    "deepcopy": "^0.6.3",
     "eases": "^1.0.8",
+    "immutable": "^3.8.1",
     "parse-unit": "^1.0.1"
   }
 }
