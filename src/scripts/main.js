@@ -1,5 +1,5 @@
 import parseUnit from 'parse-unit'
-import deepCopy from 'deepcopy'
+import {fromJS} from 'immutable'
 import eases from 'eases'
 
 const instances = []
@@ -113,7 +113,7 @@ const relativeToAbsoluteValue = function(value, elem, scrollTop = getScrollTop()
 const validate = function(data = {}) {
 
 	// Deep copy object to avoid changes by reference
-	data = deepCopy(data)
+	data = fromJS(data).toJS()
 
 	if (data.from==null) throw new Error('Missing property `from`')
 	if (data.to==null)   throw new Error('Missing property `to`')
