@@ -1,5 +1,5 @@
 import parseUnit from 'parse-unit'
-import deepCopy from 'deepcopy'
+import deepCopy from 'lodash.clonedeep'
 import eases from 'eases'
 
 const instances = []

@@ -27,8 +27,8 @@
     "gulp": "^3.9.1"
   },
   "dependencies": {
-    "deepcopy": "^0.6.3",
     "eases": "^1.0.8",
+    "lodash.clonedeep": "^4.5.0",
     "parse-unit": "^1.0.1"
   }
 }
