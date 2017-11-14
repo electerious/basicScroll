@@ -311,7 +311,11 @@ Example:
 
 Type: `Integer|String` Default: `null` Optional: `false`
 
-basicScroll starts to animate the [props](#props) when the scroll position is above `from` and below `to`. Absolute and relative values are allowed. Relative values require a [DOM Element/Node](#dom-elementnode).
+basicScroll starts to animate the [props](#props) when the scroll position is above `from` and below `to`. Absolute and relative values are allowed.
+
+Relative values require a [DOM Element/Node](#dom-elementnode). The first part of the value describes the element position, the last part describes the viewport position: `<element>-<viewport>`. `middle-bottom` in `from` specifies that the animation starts when the middle of the element reaches the bottom of the viewport.
+
+Known relative values: `top-top`, `top-middle`, `top-bottom`, `middle-top`, `middle-middle`, `middle-bottom`, `bottom-top`, `bottom-middle`, `bottom-bottom`
 
 Examples:
 
