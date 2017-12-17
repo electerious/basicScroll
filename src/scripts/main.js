@@ -58,8 +58,8 @@ const parseAbsoluteValue = function(value) {
 	const parsedValue = parseUnit(value)
 
 	return {
-		value : parsedValue[0],
-		unit  : parsedValue[1]
+		value: parsedValue[0],
+		unit: parsedValue[1]
 	}
 
 }
@@ -88,16 +88,16 @@ const relativeToAbsoluteValue = function(value, elem, scrollTop = getScrollTop()
 
 	const elemSize = elem.getBoundingClientRect()
 
-	const elemAnchor     = value.match(/^[a-z]+/)[0]
+	const elemAnchor = value.match(/^[a-z]+/)[0]
 	const viewportAnchor = value.match(/[a-z]+$/)[0]
 
 	let y = 0
 
-	if (viewportAnchor==='top')    y -= 0
+	if (viewportAnchor==='top') y -= 0
 	if (viewportAnchor==='middle') y -= viewportHeight / 2
 	if (viewportAnchor==='bottom') y -= viewportHeight
 
-	if (elemAnchor==='top')    y += (elemSize.top + scrollTop)
+	if (elemAnchor==='top') y += (elemSize.top + scrollTop)
 	if (elemAnchor==='middle') y += (elemSize.top + scrollTop) + elemSize.height / 2
 	if (elemAnchor==='bottom') y += (elemSize.top + scrollTop) + elemSize.height
 
@@ -116,28 +116,28 @@ const validate = function(data = {}) {
 	data = clonedeep(data)
 
 	if (data.from==null) throw new Error('Missing property `from`')
-	if (data.to==null)   throw new Error('Missing property `to`')
+	if (data.to==null) throw new Error('Missing property `to`')
 
-	if (data.inside==null)  data.inside = () => {}
+	if (data.inside==null) data.inside = () => {}
 	if (data.outside==null) data.outside = () => {}
 
-	if (typeof data.inside!=='function')  throw new Error('Property `inside` must be a function')
+	if (typeof data.inside!=='function') throw new Error('Property `inside` must be a function')
 	if (typeof data.outside!=='function') throw new Error('Property `outside` must be a function')
 
 	if (data.elem==null) {
 
 		if (isAbsoluteValue(data.from)===false) throw new Error('Property `from` must be a absolute value when no `elem` has been provided')
-		if (isAbsoluteValue(data.to)===false)   throw new Error('Property `to` must be a absolute value when no `elem` has been provided')
+		if (isAbsoluteValue(data.to)===false) throw new Error('Property `to` must be a absolute value when no `elem` has been provided')
 
 	} else {
 
 		if (isRelativeValue(data.from)===true) data.from = relativeToAbsoluteValue(data.from, data.elem)
-		if (isRelativeValue(data.to)===true)   data.to   = relativeToAbsoluteValue(data.to, data.elem)
+		if (isRelativeValue(data.to)===true) data.to = relativeToAbsoluteValue(data.to, data.elem)
 
 	}
 
 	data.from = parseAbsoluteValue(data.from)
-	data.to   = parseAbsoluteValue(data.to)
+	data.to = parseAbsoluteValue(data.to)
 
 	if (data.props==null) data.props = {}
 
@@ -146,14 +146,14 @@ const validate = function(data = {}) {
 		const prop = data.props[key]
 
 		if (isAbsoluteValue(prop.from)===false) throw new Error('Property `from` of prop must be a absolute value')
-		if (isAbsoluteValue(prop.to)===false)   throw new Error('Property `from` of prop must be a absolute value')
+		if (isAbsoluteValue(prop.to)===false) throw new Error('Property `from` of prop must be a absolute value')
 
 		prop.from = parseAbsoluteValue(prop.from)
-		prop.to   = parseAbsoluteValue(prop.to)
+		prop.to = parseAbsoluteValue(prop.to)
 
 		if (typeof prop.timing==='string' && eases[prop.timing]==null) throw new Error('Unknown timing for property `timing` of prop')
 
-		if (prop.timing==null)             prop.timing = eases['linear']
+		if (prop.timing==null) prop.timing = eases['linear']
 		if (typeof prop.timing==='string') prop.timing = eases[prop.timing]
 
 		if (prop.direct===true && data.elem==null) throw new Error('Property `elem` required when `direct` is true')
@@ -187,15 +187,15 @@ const update = function(instance, scrollTop = getScrollTop()) {
 
 	// Use unnormalized percentage to check if the viewport is between from and to.
 	// Would always return true when using the normalize percentage.
-	const isInside  = (percentage>=0 && percentage<=100)
+	const isInside = (percentage>=0 && percentage<=100)
 	const isOutside = (percentage<0 || percentage>100)
 
 	// Execute callbacks
-	if (isInside===true)  data.inside(instance, percentage)
+	if (isInside===true) data.inside(instance, percentage)
 	if (isOutside===true) data.outside(instance, percentage)
 
 	// Normalize percentage
-	if (percentage<0)   percentage = 0
+	if (percentage<0) percentage = 0
 	if (percentage>100) percentage = 100
 
 	// Return an array with all updated props
@@ -212,7 +212,7 @@ const update = function(instance, scrollTop = getScrollTop()) {
 		const unit = prop.from.unit || prop.to.unit
 
 		// The value that should be interpolated
-		const diff  = prop.from.value - prop.to.value
+		const diff = prop.from.value - prop.to.value
 
 		// All easing functions only remap a time value, and all have the same signature.
 		// Typically a value between 0 and 1, and it returns a new float that has been eased.
@@ -226,9 +226,9 @@ const update = function(instance, scrollTop = getScrollTop()) {
 		const rounded = Math.round(value * 100) / 100
 
 		return {
-			elem  : elem,
-			key   : key,
-			value : rounded + unit
+			elem: elem,
+			key: key,
+			value: rounded + unit
 		}
 
 	})
@@ -354,12 +354,12 @@ export const create = function(data) {
 	// Assign instance to a variable so the instance can be used
 	// elsewhere in the current function
 	const instance = {
-		isActive  : _isActive,
-		getData   : _getData,
-		calculate : _calculate,
-		update    : _update,
-		start     : _start,
-		stop      : _stop
+		isActive: _isActive,
+		getData: _getData,
+		calculate: _calculate,
+		update: _update,
+		start: _start,
+		stop: _stop
 	}
 
 	// Store instance in global array

@@ -73,13 +73,13 @@ Tip: Animating from `.01` to `.99` avoids the repaints that normally occur when 
 
 ```js
 const instance = basicScroll.create({
-	elem  : document.querySelector('.element'),
-	from  : 'top-bottom',
-	to    : 'middle-middle',
-	props : {
+	elem: document.querySelector('.element'),
+	from: 'top-bottom',
+	to: 'middle-middle',
+	props: {
 		'--opacity': {
-			from : '.01',
-			to   : '.99'
+			from: '.01',
+			to: '.99'
 		}
 	}
 })
@@ -118,12 +118,12 @@ Examples:
 
 ```js
 const instance = basicScroll.create({
-	from  : '0',
-	to    : '100px',
-	props : {
+	from: '0',
+	to: '100px',
+	props: {
 		'--opacity': {
-			from : '0',
-			to   : '1'
+			from: '0',
+			to: '1'
 		}
 	}
 })
@@ -131,14 +131,14 @@ const instance = basicScroll.create({
 
 ```js
 const instance = basicScroll.create({
-	elem  : document.querySelector('.element'),
-	from  : 'top-bottom',
-	to    : 'bottom-top',
-	props : {
+	elem: document.querySelector('.element'),
+	from: 'top-bottom',
+	to: 'bottom-top',
+	props: {
 		'--translateY': {
-			from   : '0',
-			to     : '100%',
-			timing : 'elasticOut'
+			from: '0',
+			to: '100%',
+			timing: 'elasticOut'
 		}
 	}
 })
@@ -146,13 +146,13 @@ const instance = basicScroll.create({
 
 ```js
 const instance = basicScroll.create({
-	elem    : document.querySelector('.element'),
-	from    : 'top-middle',
-	to      : 'bottom-middle',
-	inside  : (instance, percentage) => {
+	elem: document.querySelector('.element'),
+	from: 'top-middle',
+	to: 'bottom-middle',
+	inside: (instance, percentage) => {
 		console.log('viewport is inside from and to')
 	},
-	outside : (instance, percentage) => {
+	outside: (instance, percentage) => {
 		console.log('viewport is outside from and to')
 	}
 })
@@ -255,13 +255,13 @@ The data object can include the following properties:
 	/*
 	 * Start and stop position.
 	 */
-	from  : null,
- 	to    : null,
+	from: null,
+ 	to: null,
 	/*
 	 * Callback functions.
 	 */
-	inside  : (instance, percentage) => {},
-	outside : (instance, percentage) => {},
+	inside: (instance, percentage) => {},
+	outside: (instance, percentage) => {},
 	/*
 	 * Props.
 	 */
@@ -273,8 +273,8 @@ The data object can include the following properties:
 			/*
 			 * Start and end values.
 			 */
-			from : null,
-			to   : null,
+			from: null,
+			to: null,
 			/*
 			 * Animation timing.
 			 */
@@ -322,8 +322,8 @@ Examples:
 ```js
 {
 	/* ... */
-	from : '0px',
-	to   : '100px',
+	from: '0px',
+	to: '100px',
 	/* ... */
 }
 ```
@@ -331,8 +331,8 @@ Examples:
 ```js
 {
 	/* ... */
-	from : 'top-middle',
-	to   : 'bottom-middle',
+	from: 'top-middle',
+	to: 'bottom-middle',
 	/* ... */
 }
 ```
@@ -356,8 +356,8 @@ Example:
 ```js
 {
 	/* ... */
-	inside  : (instance, percentage) => {},
-	outside : (instance, percentage) => {},
+	inside: (instance, percentage) => {},
+	outside: (instance, percentage) => {},
 	/* ... */
 }
 ```
@@ -395,8 +395,8 @@ Examples:
 ```js
 '--name': {
 	/* ... */
-	from : '0',
-	to   : '100px',
+	from: '0',
+	to: '100px',
 	/* ... */
 }
 ```
@@ -404,8 +404,8 @@ Examples:
 ```js
 '--name': {
 	/* ... */
-	from : '50%',
-	to   : '100%',
+	from: '50%',
+	to: '100%',
 	/* ... */
 }
 ```
@@ -413,8 +413,8 @@ Examples:
 ```js
 '--name': {
 	/* ... */
-	from : '0',
-	to   : '1turn',
+	from: '0',
+	to: '1turn',
 	/* ... */
 }
 ```

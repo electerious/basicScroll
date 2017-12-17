@@ -71,15 +71,15 @@
 			// Crate an instance for the current element and store the instance in an array.
 			// We start the animation later using the instances from the array.
 			easeBoxes.push(basicScroll.create({
-				elem  : elem,
-				from  : 'middle-bottom',
-				to    : 'bottom-top',
-				props : {
+				elem: elem,
+				from: 'middle-bottom',
+				to: 'bottom-top',
+				props: {
 					'--ty': {
-						from   : '0',
-						to     : '100px',
-						timing : timing,
-						direct : true
+						from: '0',
+						to: '100px',
+						timing: timing,
+						direct: true
 					}
 				}
 			}))
@@ -87,27 +87,27 @@
 		})
 
 		const rotateBox = basicScroll.create({
-			elem  : document.querySelector('.rotateBox'),
-			from  : 'top-middle',
-			to    : 'top-top',
-			props : {
+			elem: document.querySelector('.rotateBox'),
+			from: 'top-middle',
+			to: 'top-top',
+			props: {
 				'--r': {
-					from : '0',
-					to   : '1turn'
+					from: '0',
+					to: '1turn'
 				}
 			}
 		})
 
 		const fadeBox = basicScroll.create({
-			elem    : document.querySelector('.fadeBox'),
-			from    : 'bottom-bottom',
-			to      : 'top-middle',
-			inside  : (instance, percentage) => console.log('fadeBox is animating'),
-			outside : (instance, percentage) => console.log('fadeBox is not animating'),
-			props   : {
+			elem: document.querySelector('.fadeBox'),
+			from: 'bottom-bottom',
+			to: 'top-middle',
+			inside: (instance, percentage) => console.log('fadeBox is animating'),
+			outside: (instance, percentage) => console.log('fadeBox is not animating'),
+			props: {
 				'--o': {
-					from : '.01',
-					to   : '.99'
+					from: '.01',
+					to: '.99'
 				}
 			}
 		})
