@@ -149,10 +149,10 @@ const instance = basicScroll.create({
 	elem: document.querySelector('.element'),
 	from: 'top-middle',
 	to: 'bottom-middle',
-	inside: (instance, percentage) => {
+	inside: (instance, percentage, props) => {
 		console.log('viewport is inside from and to')
 	},
-	outside: (instance, percentage) => {
+	outside: (instance, percentage, props) => {
 		console.log('viewport is outside from and to')
 	}
 })
@@ -260,8 +260,8 @@ The data object can include the following properties:
 	/*
 	 * Callback functions.
 	 */
-	inside: (instance, percentage) => {},
-	outside: (instance, percentage) => {},
+	inside: (instance, percentage, props) => {},
+	outside: (instance, percentage, props) => {},
 	/*
 	 * Props.
 	 */
@@ -344,7 +344,7 @@ Type: `Function` Default: `() => {}` Optional: `true`
 - The `inside` callback executes when the user scrolls and the viewport is within the given [start and stop position](#start-and-stop-position).
 - The `outside` callback executes when the user scrolls and the viewport is outside the given [start and stop position](#start-and-stop-position).
 
-Both callbacks receive the current instance and a percentage:
+Both callbacks receive the current instance, a percentage and the calculated properties:
 
 - < 0% percent = Scroll position is below `from`
 - = 0% percent = Scroll position is `from`
@@ -356,8 +356,8 @@ Example:
 ```js
 {
 	/* ... */
-	inside: (instance, percentage) => {},
-	outside: (instance, percentage) => {},
+	inside: (instance, percentage, props) => {},
+	outside: (instance, percentage, props) => {},
 	/* ... */
 }
 ```

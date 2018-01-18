@@ -179,27 +179,15 @@ const update = function(instance, scrollTop = getScrollTop()) {
 	// 100% in pixel
 	const total = data.to.value - data.from.value
 
-	// Pixel already scrolled
+	// Pixel scrolled
 	const current = scrollTop - data.from.value
 
-	// Percent already scrolled
-	let percentage = current / (total / 100)
+	// Percent scrolled
+	const precisePercentage = current / (total / 100)
+	const normalizedPercentage = Math.min(Math.max(precisePercentage, 0), 100)
 
-	// Use unnormalized percentage to check if the viewport is between from and to.
-	// Would always return true when using the normalize percentage.
-	const isInside = (percentage>=0 && percentage<=100)
-	const isOutside = (percentage<0 || percentage>100)
-
-	// Execute callbacks
-	if (isInside===true) data.inside(instance, percentage)
-	if (isOutside===true) data.outside(instance, percentage)
-
-	// Normalize percentage
-	if (percentage<0) percentage = 0
-	if (percentage>100) percentage = 100
-
-	// Return an array with all updated props
-	return Object.keys(data.props).map((key) => {
+	// Generate an array with all updated props
+	const props = Object.keys(data.props).map((key) => {
 
 		const prop = data.props[key]
 
@@ -216,7 +204,7 @@ const update = function(instance, scrollTop = getScrollTop()) {
 
 		// All easing functions only remap a time value, and all have the same signature.
 		// Typically a value between 0 and 1, and it returns a new float that has been eased.
-		const time = prop.timing(percentage / 100)
+		const time = prop.timing(normalizedPercentage / 100)
 
 		const value = prop.from.value - diff * time
 
@@ -232,6 +220,17 @@ const update = function(instance, scrollTop = getScrollTop()) {
 		}
 
 	})
+
+	// Use precise percentage to check if the viewport is between from and to.
+	// Would always return true when using the normalized percentage.
+	const isInside = (precisePercentage>=0 && precisePercentage<=100)
+	const isOutside = (precisePercentage<0 || precisePercentage>100)
+
+	// Execute callbacks
+	if (isInside===true) data.inside(instance, precisePercentage, props)
+	if (isOutside===true) data.outside(instance, precisePercentage, props)
+
+	return props
 
 }
 
