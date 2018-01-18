@@ -44,7 +44,7 @@ const getViewportHeight = function() {
  */
 const isAbsoluteValue = function(value) {
 
-	return (isNaN(parseUnit(value)[0])===true ? false : true)
+	return isNaN(parseUnit(value)[0])===false
 
 }
 
@@ -72,7 +72,7 @@ const parseAbsoluteValue = function(value) {
  */
 const isRelativeValue = function(value) {
 
-	return (String(value).match(/^[a-z]+-[a-z]+$/)===null ? false : true)
+	return String(value).match(/^[a-z]+-[a-z]+$/)!==null
 
 }
 
@@ -233,8 +233,6 @@ const update = function(instance, scrollTop = getScrollTop()) {
 
 	})
 
-	return values
-
 }
 
 /**
@@ -253,6 +251,7 @@ const setProp = function(elem, prop) {
  * This part get executed with every frame. Make sure it's performant as hell.
  * @param {Object} style - Style object.
  * @param {?Integer} previousScrollTop
+ * @returns {?*}
  */
 const loop = function(style, previousScrollTop) {
 
