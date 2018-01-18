@@ -346,10 +346,10 @@ Type: `Function` Default: `() => {}` Optional: `true`
 
 Both callbacks receive the current instance, a percentage and the calculated properties:
 
-- < 0% percent = Scroll position is below `from`
-- = 0% percent = Scroll position is `from`
-- = 100% percent = Scroll position is `to`
-- > 100% percent = Scroll position is above `from`
+- `< 0%` percent = Scroll position is below `from`
+- `= 0%` percent = Scroll position is `from`
+- `= 100%` percent = Scroll position is `to`
+- `> 100%` percent = Scroll position is above `from`
 
 Example:
 
