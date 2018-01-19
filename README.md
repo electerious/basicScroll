@@ -23,6 +23,7 @@ basicScroll allows you to change CSS variables depending on the scroll position.
 |:-----------|:------------|:------------|
 | Default | Includes most features. | [Try it on CodePen](http://codepen.io/electerious/pen/QGNxxx) |
 | Parallax scene | A composition of multiple, moving layers. | [Try it on CodePen](http://codepen.io/electerious/pen/gLLozQ) |
+| Callback | Animate properties in JS via callbacks. | [Try it on CodePen](https://codepen.io/electerious/pen/goZRBv) |
 
 ## Features
 
