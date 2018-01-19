@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+
+	<meta charset="utf-8">
+	<title>basicScroll Demo</title>
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<style>
+
+		body {
+			width: 100%;
+			height: 200vh;
+		}
+
+		.container {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			width: 100%;
+			height: 200vh;
+		}
+
+		.clock {
+			width: 80px;
+			height: 96px;
+		}
+
+		.box::before {
+			content: attr(data-timing);
+		}
+
+	</style>
+
+	<div class="container">
+
+		<svg class="clock" viewBox="0 0 20 24" version="1.1">
+			<path class="clock__body" d="M10,4 C4.478,4 0,8.477 0,14 C0,19.523 4.478,24 10,24 C15.522,24 20,19.523 20,14 C20,8.477 15.522,4 10,4 Z M10,22 C5.589,22 2,18.411 2,14 C2,9.589 5.589,6 10,6 C14.411,6 18,9.589 18,14 C18,18.411 14.411,22 10,22 Z M8,2.181 L8,8.8817842e-16 L12,8.8817842e-16 L12,2.181 C10.562,1.938 9.408,1.943 8,2.181 Z M17.179,4.407 L18.586,3 L20,4.414 L18.679,5.735 C18.217,5.251 17.715,4.809 17.179,4.407 Z"></path>
+			<path class="clock__hand" d="M11,12 L10.312,8 L9.703,8 L9,12 C8.404,12.347 8,12.984 8,13.723 C8,14.827 8.896,15.723 10,15.723 C11.104,15.723 12,14.827 12,13.723 C12,12.984 11.596,12.347 11,12 Z"></path>
+		</svg>
+
+	</div>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/2.6.3/svg.min.js"></script>
+	<script src="../dist/basicScroll.min.js"></script>
+
+	<script>
+
+		const elem = document.querySelector('.clock')
+		const hand = SVG.adopt(elem).select('.clock__hand')
+
+		const clock = basicScroll.create({
+			elem: elem,
+			from: 'middle-bottom',
+			to: 'middle-top',
+			inside: (instance, percentage, props) => hand.rotate(props[0].value, 10, 14),
+			props: {
+				'deg': {
+					from: 0,
+					to: 360
+				}
+			}
+		})
+
+		// Start instance
+		clock.start()
+
+		// Recalculate all positions and update all properties manually when the viewport size changes.
+		// Debounce this function in production to avoid unnecessary calculations.
+		window.onresize = function() {
+
+			clock.calculate()
+			clock.update()
+
+		}
+
+	</script>
+
+</html>

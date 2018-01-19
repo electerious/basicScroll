@@ -78,8 +78,8 @@ const instance = basicScroll.create({
 	to: 'middle-middle',
 	props: {
 		'--opacity': {
-			from: '.01',
-			to: '.99'
+			from: .01,
+			to: .99
 		}
 	}
 })
@@ -122,8 +122,8 @@ const instance = basicScroll.create({
 	to: '100px',
 	props: {
 		'--opacity': {
-			from: '0',
-			to: '1'
+			from: 0,
+			to: 1
 		}
 	}
 })
@@ -324,6 +324,15 @@ Examples:
 	/* ... */
 	from: '0px',
 	to: '100px',
+	/* ... */
+}
+```
+
+```js
+{
+	/* ... */
+	from: 0,
+	to: 360,
 	/* ... */
 }
 ```
