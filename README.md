@@ -91,7 +91,7 @@ instance.start()
 ```css
 .element {
 	/*
-	 * Use the same CSS variable as specified in out instance.
+	 * Use the same CSS variable as specified in our instance.
 	 */
 	opacity: var(--opacity);
 	/*
