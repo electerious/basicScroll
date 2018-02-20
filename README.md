@@ -27,7 +27,7 @@ basicScroll allows you to change CSS variables depending on the scroll position.
 
 ## Features
 
-- Zero dependencies
+- Framework independent
 - CommonJS and AMD support
 - Simple JS API
 - Insane performance
