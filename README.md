@@ -192,6 +192,16 @@ Example:
 instance.stop()
 ```
 
+### .destroy()
+
+Destroys the instance. Should be called when the instance is no longer needed. All [props](#props) of the instance will keep their last value.
+
+Example:
+
+```js
+instance.destroy()
+```
+
 ### .update()
 
 Triggers an update of an instance, even when the instance is currently stopped.

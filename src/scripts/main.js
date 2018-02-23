@@ -11,7 +11,7 @@ const instances = []
  */
 const getActiveInstances = function(instances) {
 
-	return instances.filter((instance) => instance.isActive())
+	return instances.filter((instance) => instance!=null && instance.isActive())
 
 }
 
@@ -349,6 +349,15 @@ export const create = function(data) {
 
 	}
 
+	// Destroys the instance
+	const _destroy = () => {
+
+		// Replace instance instead of deleting the item to avoid
+		// that the index of other instances changes.
+		instances[index] = undefined
+
+	}
+
 	// Assign instance to a variable so the instance can be used
 	// elsewhere in the current function.
 	const instance = {
@@ -357,11 +366,12 @@ export const create = function(data) {
 		calculate: _calculate,
 		update: _update,
 		start: _start,
-		stop: _stop
+		stop: _stop,
+		destroy: _destroy
 	}
 
-	// Store instance in global array
-	instances.push(instance)
+	// Store instance in global array and save the index
+	const index = instances.push(instance) - 1
 
 	// Calculate data for the first time
 	instance.calculate()

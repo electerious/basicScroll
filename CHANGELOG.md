@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### New
 
 - Callback demo
+- Destroy method (#6)
 
 ## [1.2.0] - 2018-01-18
 
