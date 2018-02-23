@@ -204,7 +204,7 @@ instance.destroy()
 
 ### .update()
 
-Triggers an update of an instance, even when the instance is currently stopped. Returns an object containing the applied props.
+Triggers an update of an instance, even when the instance is currently stopped.
 
 Example:
 
@@ -214,7 +214,7 @@ const props = instance.update()
 
 Returns:
 
-- `{Array}` New props. An array of objects, each with a key and value.
+- `{Object}` Applied props.
 
 ### .calculate()
 
