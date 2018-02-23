@@ -114,6 +114,7 @@ Be sure to assign your instance to a variable. Using your instance, you can…
 * …start and stop the animation.
 * …check if the instance is active.
 * …get the current props.
+* …recalculate the props when the window size changes.
 
 Examples:
 
