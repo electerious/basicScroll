@@ -11,6 +11,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 - Callback demo
 - Destroy method (#6)
 
+### Changed
+
+- The `props` callback parameter is now nicely formatted
+- The `update` method returns a nicely formatted object of props
+- [Direct mode](README.md#data) must now be defined globally per instance instead of setting it on each prop individually
+
 ## [1.2.0] - 2018-01-18
 
 ### New

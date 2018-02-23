@@ -204,12 +204,12 @@ instance.destroy()
 
 ### .update()
 
-Triggers an update of an instance, even when the instance is currently stopped.
+Triggers an update of an instance, even when the instance is currently stopped. Returns an object containing the applied props.
 
 Example:
 
 ```js
-instance.update()
+const props = instance.update()
 ```
 
 Returns:
@@ -270,6 +270,10 @@ The data object can include the following properties:
 	from: null,
  	to: null,
 	/*
+	 * Direct mode.
+	 */
+	direct: false,
+	/*
 	 * Callback functions.
 	 */
 	inside: (instance, percentage, props) => {},
@@ -290,11 +294,7 @@ The data object can include the following properties:
 			/*
 			 * Animation timing.
 			 */
-			timing: 'ease',
-			/*
-			 * Direct mode.
-			 */
-			direct: false
+			timing: 'ease'
 		}
 	}
 }
@@ -356,6 +356,28 @@ Examples:
 	to: 'bottom-middle',
 	/* ... */
 }
+```
+
+### Direct mode
+
+Type: `Boolean` Default: `false` Optional: `true`
+
+basicScroll applies all [props](#props) globally by default. This way you can use variables everywhere in your CSS, even when the instance tracks just one element. Set `direct` to `true` to apply all styles directly to the [DOM Element/Node](#dom-elementnode). Setting `direct` to `true` also allows you to animate CSS properties, not just CSS variables.
+
+Examples:
+
+```html
+<!-- direct: false -->
+<html style="--name: 0;">
+	<div class="element"></div>
+</html>
+```
+
+```html
+<!-- direct: true -->
+<html>
+	<div class="element" style="--name: 0;"></div>
+</html>
 ```
 
 ### Callback functions
@@ -462,28 +484,6 @@ Examples:
 	/* ... */
 	timing: (t) => t * t
 }
-```
-
-### Direct mode
-
-Type: `Boolean` Default: `false` Optional: `true`
-
-basicScroll applies all [props](#props) globally by default. This way you can use variables everywhere in your CSS, even when the instance tracks just one element. Set `direct` to `true` to apply styles directly to the [DOM Element/Node](#dom-elementnode). Setting `direct` to `true` also allows you to animate CSS properties, not just CSS variables.
-
-Examples:
-
-```html
-<!-- direct: false -->
-<html style="--name: 0;">
-	<div class="element"></div>
-</html>
-```
-
-```html
-<!-- direct: true -->
-<html>
-	<div class="element" style="--name: 0;"></div>
-</html>
 ```
 
 ## Tips

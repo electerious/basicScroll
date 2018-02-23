@@ -167,12 +167,12 @@ const validate = function(data = {}) {
 }
 
 /**
- * Updates instance props and their values.
+ * Calculates the props of an instance.
  * @param {Object} instance
  * @param {?Integer} scrollTop - Pixels scrolled in document.
- * @returns {Array} props - Updated props.
+ * @returns {Object} Calculated props and the element to apply styles to.
  */
-const update = function(instance, scrollTop = getScrollTop()) {
+const getProps = function(instance, scrollTop = getScrollTop()) {
 
 	const data = instance.getData()
 
@@ -186,14 +186,14 @@ const update = function(instance, scrollTop = getScrollTop()) {
 	const precisePercentage = current / (total / 100)
 	const normalizedPercentage = Math.min(Math.max(precisePercentage, 0), 100)
 
-	// Generate an array with all updated props
-	const props = Object.keys(data.props).map((key) => {
+	// Apply styles directly to element when direct is true.
+	// Apply them globally when direct is false.
+	const elem = data.direct===true ? data.elem : document.documentElement
+
+	// Generate an array with all new props
+	const props = Object.keys(data.props).reduce((acc, key) => {
 
 		const prop = data.props[key]
-
-		// Apply styles directly to element when direct is true.
-		// Apply them globally when direct is false.
-		const elem = prop.direct===true ? data.elem : document.documentElement
 
 		// Use the unit of from OR to. It's valid to animate from '0' to '100px' and
 		// '0' should be treated as 'px', too. Unit will be an empty string when no unit given.
@@ -213,13 +213,11 @@ const update = function(instance, scrollTop = getScrollTop()) {
 		// http://stackoverflow.com/questions/588004/is-floating-point-math-broken
 		const rounded = Math.round(value * 100) / 100
 
-		return {
-			elem: elem,
-			key: key,
-			value: rounded + unit
-		}
+		acc[key] = rounded + unit
 
-	})
+		return acc
+
+	}, {})
 
 	// Use precise percentage to check if the viewport is between from and to.
 	// Would always return true when using the normalized percentage.
@@ -230,7 +228,10 @@ const update = function(instance, scrollTop = getScrollTop()) {
 	if (isInside===true) data.inside(instance, precisePercentage, props)
 	if (isOutside===true) data.outside(instance, precisePercentage, props)
 
-	return props
+	return {
+		elem,
+		props
+	}
 
 }
 
@@ -242,6 +243,20 @@ const update = function(instance, scrollTop = getScrollTop()) {
 const setProp = function(elem, prop) {
 
 	elem.style.setProperty(prop.key, prop.value)
+
+}
+
+/**
+ * Adds properties to a given style object.
+ * @param {Node} elem - Styles will be applied to this element.
+ * @param {Object} props - Object of props.
+ */
+const setProps = function(elem, props) {
+
+	Object.keys(props).forEach((key) => setProp(elem, {
+		key: key,
+		value: props[key]
+	}))
 
 }
 
@@ -275,14 +290,10 @@ const loop = function(style, previousScrollTop) {
 	if (previousScrollTop===scrollTop) return repeat()
 	else previousScrollTop = scrollTop
 
-	// Get new props of each instance
-	const newProps = activeInstances.map((instance) => update(instance, scrollTop))
-
-	// Flatten props because each update can return multiple props
-	const flattedProps = [].concat(...newProps)
-
-	// Set new props
-	flattedProps.forEach((prop) => setProp(prop.elem, prop))
+	// Get and set new props of each instance
+	activeInstances
+		.map((instance) => getProps(instance, scrollTop))
+		.forEach(({ elem, props }) => setProps(elem, props))
 
 	repeat()
 
@@ -325,13 +336,13 @@ export const create = function(data) {
 	// Update props
 	const _update = () => {
 
-		// Get new props of each instance
-		const newProps = update(instance)
+		// Get new props
+		const { elem, props } = getProps(instance)
 
 		// Set new props
-		newProps.forEach((prop) => setProp(prop.elem, prop))
+		setProps(elem, props)
 
-		return newProps
+		return props
 
 	}
 
