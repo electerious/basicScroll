@@ -62,7 +62,7 @@
 		const easeBoxes = []
 
 		// Create an animation for each ease box. Each with a different timing.
-		Array.prototype.forEach.call(document.querySelectorAll('.easeBox'), function(elem, i) {
+		document.querySelectorAll('.easeBox').forEach((elem, i) => {
 
 			// Get the timing from the data attribute.
 			// You can also hard-code the timing, but for the demo it's easier this way.
