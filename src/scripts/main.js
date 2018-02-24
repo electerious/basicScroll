@@ -121,6 +121,9 @@ const validate = function(data = {}) {
 	if (data.inside==null) data.inside = () => {}
 	if (data.outside==null) data.outside = () => {}
 
+	if (data.direct===true && data.elem==null) throw new Error('Property `elem` required when `direct` is true')
+	if (data.direct!==true) data.direct = false
+
 	if (typeof data.inside!=='function') throw new Error('Property `inside` must be a function')
 	if (typeof data.outside!=='function') throw new Error('Property `outside` must be a function')
 
@@ -155,10 +158,6 @@ const validate = function(data = {}) {
 
 		if (prop.timing==null) prop.timing = eases['linear']
 		if (typeof prop.timing==='string') prop.timing = eases[prop.timing]
-
-		if (prop.direct===true && data.elem==null) throw new Error('Property `elem` required when `direct` is true')
-
-		if (prop.direct!==true) prop.direct = false
 
 	})
 
