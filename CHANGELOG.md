@@ -4,18 +4,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [1.3.0] - 2018-02-24
-
-### New
-
-- Callback demo
-- Destroy method (#6)
+## [Unreleased]
 
 ### Changed
 
 - The `props` callback parameter is now nicely formatted
 - The `update` method returns a nicely formatted object of props
 - [Direct mode](README.md#data) must now be defined globally per instance instead of setting it on each prop individually
+
+## [1.3.0] - 2018-02-24
+
+### New
+
+- Callback demo
+- Destroy method (#6)
 
 ## [1.2.0] - 2018-01-18
 
