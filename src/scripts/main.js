@@ -5,6 +5,26 @@ import eases from 'eases'
 const instances = []
 
 /**
+ * Debounces a function that will be triggered many times.
+ * @param {Function} fn
+ * @param {Integer} duration
+ * @returns {Function}
+ */
+const debounce = function(fn, duration) {
+
+	let timeout = null
+
+	return (...args) => {
+
+		clearTimeout(timeout)
+
+		timeout = setTimeout(() => fn(...args), duration)
+
+	}
+
+}
+
+/**
  * Returns all active instances from an array.
  * @param {Array} instances
  * @returns {Array} instances - Active instances.
@@ -14,6 +34,18 @@ const getActiveInstances = function(instances) {
 	return instances.filter((instance) => instance!=null && instance.isActive())
 
 }
+
+/**
+ * Returns all tracked instances from an array.
+ * @param {Array} instances
+ * @returns {Array} instances - Tracked instances.
+ */
+const getTrackedInstances = function(instances) {
+
+	return instances.filter((instance) => instance!=null && instance.getData().track)
+
+}
+
 
 /**
  * Returns the number of scrolled pixels.
@@ -123,6 +155,8 @@ const validate = function(data = {}) {
 
 	if (data.direct===true && data.elem==null) throw new Error('Property `elem` required when `direct` is true')
 	if (data.direct!==true) data.direct = false
+
+	if (data.track!==false) data.track = true
 
 	if (typeof data.inside!=='function') throw new Error('Property `inside` must be a function')
 	if (typeof data.outside!=='function') throw new Error('Property `outside` must be a function')
@@ -392,3 +426,18 @@ export const create = function(data) {
 
 // Start to loop
 loop()
+
+// Recalculate and update instances when the window size changes
+window.addEventListener('resize', debounce(() => {
+
+	// Get all tracked instances
+	const trackedInstances = getTrackedInstances(instances)
+
+	trackedInstances.forEach((instance) => {
+
+		instance.calculate()
+		instance.update()
+
+	})
+
+}, 50))

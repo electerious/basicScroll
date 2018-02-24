@@ -274,6 +274,10 @@ The data object can include the following properties:
 	 */
 	direct: false,
 	/*
+	 * Track window size changes.
+	 */
+	track: true,
+	/*
 	 * Callback functions.
 	 */
 	inside: (instance, percentage, props) => {},
@@ -378,6 +382,40 @@ Examples:
 <html>
 	<div class="element" style="--name: 0;"></div>
 </html>
+```
+
+### Track window size changes
+
+Type: `Boolean` Default: `true` Optional: `true`
+
+basicScroll automatically recalculates and updates instances when the size of the window changes. You can disable the tracking for each instance individually when you want to take care of it by yourself.
+
+Note: basicScroll only tracks the window size. You still must recalculate and update your instances manually when you modify your site. Each modification that changes the layout of the page should trigger such an update in your code.
+
+Example:
+
+```js
+const instance = basicScroll.create({
+	elem: document.querySelector('.element'),
+	from: 'top-bottom',
+	to: 'bottom-top',
+	track: false,
+	props: {
+		'--opacity': {
+			from: 0,
+			to: 1
+		}
+	}
+})
+
+// Recalculate and update your instance manually when the tracking is disabled.
+// Debounce this function in production to avoid unnecessary calculations.
+window.onresize = function() {
+
+	instance.calculate()
+	instance.update()
+
+}
 ```
 
 ### Callback functions

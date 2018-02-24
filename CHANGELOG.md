@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+### New
+
+- [Track window size changes](README.md#track-window-size-changes) and recalculate and update instances when the size changes (#7)
+- `track` option to disable [window size tracking](README.md#track-window-size-changes) for each instance individually (#7)
+
 ### Changed
 
 - The `props` callback parameter is now nicely formatted

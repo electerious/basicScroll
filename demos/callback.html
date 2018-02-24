@@ -60,17 +60,7 @@
 			}
 		})
 
-		// Start instance
 		clock.start()
-
-		// Recalculate all positions and update all properties manually when the viewport size changes.
-		// Debounce this function in production to avoid unnecessary calculations.
-		window.onresize = function() {
-
-			clock.calculate()
-			clock.update()
-
-		}
 
 	</script>
 
