@@ -51,9 +51,9 @@
 			elem: elem,
 			from: 'middle-bottom',
 			to: 'middle-top',
-			inside: (instance, percentage, props) => hand.rotate(props.deg, 10, 14),
+			inside: (instance, percentage, props) => hand.rotate(props['--deg'], 10, 14),
 			props: {
-				'deg': {
+				'--deg': {
 					from: 0,
 					to: 360
 				}
