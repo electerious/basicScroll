@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2018-02-25
+
+### New
+
+- [Track window size changes](README.md#track-window-size-changes) and recalculate and update instances when the size changes (#7)
+- `track` option to disable [window size tracking](README.md#track-window-size-changes) for each instance individually (#7)
+
+### Changed
+
+- The `props` callback parameter is now nicely formatted
+- The `update` method returns a nicely formatted object of props
+- [Direct mode](README.md#data) must now be defined globally per instance instead of setting it on each prop individually
+
 ## [1.3.0] - 2018-02-24
 
 ### New

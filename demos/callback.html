@@ -51,7 +51,7 @@
 			elem: elem,
 			from: 'middle-bottom',
 			to: 'middle-top',
-			inside: (instance, percentage, props) => hand.rotate(props[0].value, 10, 14),
+			inside: (instance, percentage, props) => hand.rotate(props.deg, 10, 14),
 			props: {
 				'deg': {
 					from: 0,
@@ -60,17 +60,7 @@
 			}
 		})
 
-		// Start instance
 		clock.start()
-
-		// Recalculate all positions and update all properties manually when the viewport size changes.
-		// Debounce this function in production to avoid unnecessary calculations.
-		window.onresize = function() {
-
-			clock.calculate()
-			clock.update()
-
-		}
 
 	</script>
 

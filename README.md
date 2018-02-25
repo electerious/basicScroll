@@ -209,12 +209,12 @@ Triggers an update of an instance, even when the instance is currently stopped.
 Example:
 
 ```js
-instance.update()
+const props = instance.update()
 ```
 
 Returns:
 
-- `{Array}` New props. An array of objects, each with a key and value.
+- `{Object}` Applied props.
 
 ### .calculate()
 
@@ -270,6 +270,14 @@ The data object can include the following properties:
 	from: null,
  	to: null,
 	/*
+	 * Direct mode.
+	 */
+	direct: false,
+	/*
+	 * Track window size changes.
+	 */
+	track: true,
+	/*
 	 * Callback functions.
 	 */
 	inside: (instance, percentage, props) => {},
@@ -290,11 +298,7 @@ The data object can include the following properties:
 			/*
 			 * Animation timing.
 			 */
-			timing: 'ease',
-			/*
-			 * Direct mode.
-			 */
-			direct: false
+			timing: 'ease'
 		}
 	}
 }
@@ -355,6 +359,62 @@ Examples:
 	from: 'top-middle',
 	to: 'bottom-middle',
 	/* ... */
+}
+```
+
+### Direct mode
+
+Type: `Boolean` Default: `false` Optional: `true`
+
+basicScroll applies all [props](#props) globally by default. This way you can use variables everywhere in your CSS, even when the instance tracks just one element. Set `direct` to `true` to apply all styles directly to the [DOM Element/Node](#dom-elementnode). Setting `direct` to `true` also allows you to animate CSS properties, not just CSS variables.
+
+Examples:
+
+```html
+<!-- direct: false -->
+<html style="--name: 0;">
+	<div class="element"></div>
+</html>
+```
+
+```html
+<!-- direct: true -->
+<html>
+	<div class="element" style="--name: 0;"></div>
+</html>
+```
+
+### Track window size changes
+
+Type: `Boolean` Default: `true` Optional: `true`
+
+basicScroll automatically recalculates and updates instances when the size of the window changes. You can disable the tracking for each instance individually when you want to take care of it by yourself.
+
+Note: basicScroll only tracks the window size. You still must recalculate and update your instances manually when you modify your site. Each modification that changes the layout of the page should trigger such an update in your code.
+
+Example:
+
+```js
+const instance = basicScroll.create({
+	elem: document.querySelector('.element'),
+	from: 'top-bottom',
+	to: 'bottom-top',
+	track: false,
+	props: {
+		'--opacity': {
+			from: 0,
+			to: 1
+		}
+	}
+})
+
+// Recalculate and update your instance manually when the tracking is disabled.
+// Debounce this function in production to avoid unnecessary calculations.
+window.onresize = function() {
+
+	instance.calculate()
+	instance.update()
+
 }
 ```
 
@@ -462,28 +522,6 @@ Examples:
 	/* ... */
 	timing: (t) => t * t
 }
-```
-
-### Direct mode
-
-Type: `Boolean` Default: `false` Optional: `true`
-
-basicScroll applies all [props](#props) globally by default. This way you can use variables everywhere in your CSS, even when the instance tracks just one element. Set `direct` to `true` to apply styles directly to the [DOM Element/Node](#dom-elementnode). Setting `direct` to `true` also allows you to animate CSS properties, not just CSS variables.
-
-Examples:
-
-```html
-<!-- direct: false -->
-<html style="--name: 0;">
-	<div class="element"></div>
-</html>
-```
-
-```html
-<!-- direct: true -->
-<html>
-	<div class="element" style="--name: 0;"></div>
-</html>
 ```
 
 ## Tips

@@ -62,7 +62,7 @@
 		const easeBoxes = []
 
 		// Create an animation for each ease box. Each with a different timing.
-		Array.prototype.forEach.call(document.querySelectorAll('.easeBox'), function(elem, i) {
+		document.querySelectorAll('.easeBox').forEach((elem, i) => {
 
 			// Get the timing from the data attribute.
 			// You can also hard-code the timing, but for the demo it's easier this way.
@@ -74,12 +74,12 @@
 				elem: elem,
 				from: 'middle-bottom',
 				to: 'bottom-top',
+				direct: true,
 				props: {
 					'--ty': {
 						from: '0',
 						to: '100px',
-						timing: timing,
-						direct: true
+						timing: timing
 					}
 				}
 			}))
@@ -112,24 +112,9 @@
 			}
 		})
 
-		// Start all instances
 		rotateBox.start()
 		fadeBox.start()
 		easeBoxes.forEach((easeBox) => easeBox.start())
-
-		// Recalculate all positions and update all properties manually when the viewport size changes.
-		// Debounce this function in production to avoid unnecessary calculations.
-		window.onresize = function() {
-
-			rotateBox.calculate()
-			fadeBox.calculate()
-			easeBoxes.forEach((easeBox) => easeBox.calculate())
-
-			rotateBox.update()
-			fadeBox.update()
-			easeBoxes.forEach((easeBox) => easeBox.update())
-
-		}
 
 	</script>
 

@@ -5,6 +5,26 @@ import eases from 'eases'
 const instances = []
 
 /**
+ * Debounces a function that will be triggered many times.
+ * @param {Function} fn
+ * @param {Integer} duration
+ * @returns {Function}
+ */
+const debounce = function(fn, duration) {
+
+	let timeout = null
+
+	return (...args) => {
+
+		clearTimeout(timeout)
+
+		timeout = setTimeout(() => fn(...args), duration)
+
+	}
+
+}
+
+/**
  * Returns all active instances from an array.
  * @param {Array} instances
  * @returns {Array} instances - Active instances.
@@ -14,6 +34,18 @@ const getActiveInstances = function(instances) {
 	return instances.filter((instance) => instance!=null && instance.isActive())
 
 }
+
+/**
+ * Returns all tracked instances from an array.
+ * @param {Array} instances
+ * @returns {Array} instances - Tracked instances.
+ */
+const getTrackedInstances = function(instances) {
+
+	return instances.filter((instance) => instance!=null && instance.getData().track)
+
+}
+
 
 /**
  * Returns the number of scrolled pixels.
@@ -121,6 +153,11 @@ const validate = function(data = {}) {
 	if (data.inside==null) data.inside = () => {}
 	if (data.outside==null) data.outside = () => {}
 
+	if (data.direct===true && data.elem==null) throw new Error('Property `elem` required when `direct` is true')
+	if (data.direct!==true) data.direct = false
+
+	if (data.track!==false) data.track = true
+
 	if (typeof data.inside!=='function') throw new Error('Property `inside` must be a function')
 	if (typeof data.outside!=='function') throw new Error('Property `outside` must be a function')
 
@@ -156,10 +193,6 @@ const validate = function(data = {}) {
 		if (prop.timing==null) prop.timing = eases['linear']
 		if (typeof prop.timing==='string') prop.timing = eases[prop.timing]
 
-		if (prop.direct===true && data.elem==null) throw new Error('Property `elem` required when `direct` is true')
-
-		if (prop.direct!==true) prop.direct = false
-
 	})
 
 	return data
@@ -167,12 +200,12 @@ const validate = function(data = {}) {
 }
 
 /**
- * Updates instance props and their values.
+ * Calculates the props of an instance.
  * @param {Object} instance
  * @param {?Integer} scrollTop - Pixels scrolled in document.
- * @returns {Array} props - Updated props.
+ * @returns {Object} Calculated props and the element to apply styles to.
  */
-const update = function(instance, scrollTop = getScrollTop()) {
+const getProps = function(instance, scrollTop = getScrollTop()) {
 
 	const data = instance.getData()
 
@@ -186,14 +219,14 @@ const update = function(instance, scrollTop = getScrollTop()) {
 	const precisePercentage = current / (total / 100)
 	const normalizedPercentage = Math.min(Math.max(precisePercentage, 0), 100)
 
-	// Generate an array with all updated props
-	const props = Object.keys(data.props).map((key) => {
+	// Apply styles directly to element when direct is true.
+	// Apply them globally when direct is false.
+	const elem = data.direct===true ? data.elem : document.documentElement
+
+	// Generate an array with all new props
+	const props = Object.keys(data.props).reduce((acc, key) => {
 
 		const prop = data.props[key]
-
-		// Apply styles directly to element when direct is true.
-		// Apply them globally when direct is false.
-		const elem = prop.direct===true ? data.elem : document.documentElement
 
 		// Use the unit of from OR to. It's valid to animate from '0' to '100px' and
 		// '0' should be treated as 'px', too. Unit will be an empty string when no unit given.
@@ -213,13 +246,11 @@ const update = function(instance, scrollTop = getScrollTop()) {
 		// http://stackoverflow.com/questions/588004/is-floating-point-math-broken
 		const rounded = Math.round(value * 100) / 100
 
-		return {
-			elem: elem,
-			key: key,
-			value: rounded + unit
-		}
+		acc[key] = rounded + unit
 
-	})
+		return acc
+
+	}, {})
 
 	// Use precise percentage to check if the viewport is between from and to.
 	// Would always return true when using the normalized percentage.
@@ -230,7 +261,10 @@ const update = function(instance, scrollTop = getScrollTop()) {
 	if (isInside===true) data.inside(instance, precisePercentage, props)
 	if (isOutside===true) data.outside(instance, precisePercentage, props)
 
-	return props
+	return {
+		elem,
+		props
+	}
 
 }
 
@@ -242,6 +276,20 @@ const update = function(instance, scrollTop = getScrollTop()) {
 const setProp = function(elem, prop) {
 
 	elem.style.setProperty(prop.key, prop.value)
+
+}
+
+/**
+ * Adds properties to a given style object.
+ * @param {Node} elem - Styles will be applied to this element.
+ * @param {Object} props - Object of props.
+ */
+const setProps = function(elem, props) {
+
+	Object.keys(props).forEach((key) => setProp(elem, {
+		key: key,
+		value: props[key]
+	}))
 
 }
 
@@ -275,14 +323,10 @@ const loop = function(style, previousScrollTop) {
 	if (previousScrollTop===scrollTop) return repeat()
 	else previousScrollTop = scrollTop
 
-	// Get new props of each instance
-	const newProps = activeInstances.map((instance) => update(instance, scrollTop))
-
-	// Flatten props because each update can return multiple props
-	const flattedProps = [].concat(...newProps)
-
-	// Set new props
-	flattedProps.forEach((prop) => setProp(prop.elem, prop))
+	// Get and set new props of each instance
+	activeInstances
+		.map((instance) => getProps(instance, scrollTop))
+		.forEach(({ elem, props }) => setProps(elem, props))
 
 	repeat()
 
@@ -325,13 +369,13 @@ export const create = function(data) {
 	// Update props
 	const _update = () => {
 
-		// Get new props of each instance
-		const newProps = update(instance)
+		// Get new props
+		const { elem, props } = getProps(instance)
 
 		// Set new props
-		newProps.forEach((prop) => setProp(prop.elem, prop))
+		setProps(elem, props)
 
-		return newProps
+		return props
 
 	}
 
@@ -382,3 +426,18 @@ export const create = function(data) {
 
 // Start to loop
 loop()
+
+// Recalculate and update instances when the window size changes
+window.addEventListener('resize', debounce(() => {
+
+	// Get all tracked instances
+	const trackedInstances = getTrackedInstances(instances)
+
+	trackedInstances.forEach((instance) => {
+
+		instance.calculate()
+		instance.update()
+
+	})
+
+}, 50))
