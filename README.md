@@ -366,21 +366,35 @@ Examples:
 
 Type: `Boolean` Default: `false` Optional: `true`
 
-basicScroll applies all [props](#props) globally by default. This way you can use variables everywhere in your CSS, even when the instance tracks just one element. Set `direct` to `true` to apply all styles directly to the [DOM Element/Node](#dom-elementnode). Setting `direct` to `true` also allows you to animate CSS properties, not just CSS variables.
+basicScroll applies all [props](#props) globally by default. This way you can use variables everywhere in your CSS, even when the instance tracks just one element. Set `direct` to `true` or to a DOM element to apply all styles directly to the [DOM Element/Node](#dom-elementnode) or to the DOM element you have specified. This also allows you to animate CSS properties, not just CSS variables.
+
+- `false`: Apply styles globally (default)
+- `true`: Apply styles to the [DOM Element/Node](#dom-elementnode)
+- `Node`: Apply styles to a DOM Element/Node of your choice
 
 Examples:
 
 ```html
 <!-- direct: false -->
 <html style="--name: 0;">
-	<div class="element"></div>
+	<div class="trackedElem"></div>
+	<div class="anotherElem"></div>
 </html>
 ```
 
 ```html
 <!-- direct: true -->
 <html>
-	<div class="element" style="--name: 0;"></div>
+	<div class="trackedElem" style="--name: 0;"></div>
+	<div class="anotherElem"></div>
+</html>
+```
+
+```html
+<!-- direct: document.querySelector('.anotherElem') -->
+<html>
+	<div class="trackedElem"></div>
+	<div class="anotherElem" style="--name: 0;"></div>
 </html>
 ```
 
