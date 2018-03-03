@@ -366,11 +366,11 @@ Examples:
 
 Type: `Boolean` Default: `false` Optional: `true`
 
-basicScroll applies all [props](#props) globally by default. This way you can use variables everywhere in your CSS, even when the instance tracks just one element. Set `direct` to `true` or to a DOM element to apply all styles directly to the [DOM Element/Node](#dom-elementnode) or to the DOM element you have specified. This also allows you to animate CSS properties, not just CSS variables.
+basicScroll applies all [props](#props) globally by default. This way you can use variables everywhere in your CSS, even when the instance tracks just one element. Set `direct` to `true` or to a DOM element to apply all [props](#props) directly to the [DOM Element/Node](#dom-elementnode) or to the DOM element you have specified. This also allows you to animate CSS properties, not just CSS variables.
 
-- `false`: Apply styles globally (default)
-- `true`: Apply styles to the [DOM Element/Node](#dom-elementnode)
-- `Node`: Apply styles to a DOM Element/Node of your choice
+- `false`: Apply props globally (default)
+- `true`: Apply props to the [DOM Element/Node](#dom-elementnode)
+- `Node`: Apply props to a DOM Element/Node of your choice
 
 Examples:
 
