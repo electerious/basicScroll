@@ -16,6 +16,7 @@ basicScroll allows you to change CSS variables depending on the scroll position.
 - [Instance API](#instance-api)
 - [Data](#data)
 - [Tips](#tips)
+- [Using with Angular](#angular)
 
 ## Demos
 
@@ -366,21 +367,35 @@ Examples:
 
 Type: `Boolean` Default: `false` Optional: `true`
 
-basicScroll applies all [props](#props) globally by default. This way you can use variables everywhere in your CSS, even when the instance tracks just one element. Set `direct` to `true` to apply all styles directly to the [DOM Element/Node](#dom-elementnode). Setting `direct` to `true` also allows you to animate CSS properties, not just CSS variables.
+basicScroll applies all [props](#props) globally by default. This way you can use variables everywhere in your CSS, even when the instance tracks just one element. Set `direct` to `true` or to a DOM element to apply all [props](#props) directly to the [DOM Element/Node](#dom-elementnode) or to the DOM element you have specified. This also allows you to animate CSS properties, not just CSS variables.
+
+- `false`: Apply props globally (default)
+- `true`: Apply props to the [DOM Element/Node](#dom-elementnode)
+- `Node`: Apply props to a DOM Element/Node of your choice
 
 Examples:
 
 ```html
 <!-- direct: false -->
 <html style="--name: 0;">
-	<div class="element"></div>
+	<div class="trackedElem"></div>
+	<div class="anotherElem"></div>
 </html>
 ```
 
 ```html
 <!-- direct: true -->
 <html>
-	<div class="element" style="--name: 0;"></div>
+	<div class="trackedElem" style="--name: 0;"></div>
+	<div class="anotherElem"></div>
+</html>
+```
+
+```html
+<!-- direct: document.querySelector('.anotherElem') -->
+<html>
+	<div class="trackedElem"></div>
+	<div class="anotherElem" style="--name: 0;"></div>
 </html>
 ```
 
@@ -531,3 +546,7 @@ Examples:
 - Don't animate everything at once and don't animate too many properties. Browsers don't like this.
 - Smooth animations by adding a short transition to the element: `transform: translateY(var(--ty)); transition: transform .1s`.
 - basicScroll applies all [props](#props) globally by default. Try to reuse variables across elements instead of creating more instances.
+
+## Using with Angular
+
+Maintaned at [https://github.com/theunreal/ngx-basicscroll](ngx-basicscroll)
