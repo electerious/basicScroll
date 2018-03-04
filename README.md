@@ -16,7 +16,7 @@ basicScroll allows you to change CSS variables depending on the scroll position.
 - [Instance API](#instance-api)
 - [Data](#data)
 - [Tips](#tips)
-- [Using with Angular](#angular)
+- [Using with Angular](#using-with-angular)
 
 ## Demos
 
@@ -549,4 +549,4 @@ Examples:
 
 ## Using with Angular
 
-Maintaned at [https://github.com/theunreal/ngx-basicscroll](ngx-basicscroll)
+Angular support for basicScroll is maintained at: [ngx-basicscroll](https://github.com/theunreal/ngx-basicscroll)
