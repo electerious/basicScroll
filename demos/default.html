@@ -12,7 +12,7 @@
 
 		body {
 			width: 100%;
-			height: 300vh;
+			height: 400vh;
 		}
 
 		.container {
@@ -24,6 +24,7 @@
 
 		.container:nth-child(1) { height: 200vh; }
 		.container:nth-child(2) { height: 0; }
+		.container:nth-child(3) { height: 200vh; }
 
 		.box {
 			padding: 1em 2em;
@@ -39,6 +40,7 @@
 		.easeBox { transform: translateY(var(--ty)); }
 		.rotateBox { transform: rotate(var(--r)); }
 		.fadeBox { opacity: var(--o); }
+		.directBox { opacity: var(--o); }
 
 	</style>
 
@@ -53,6 +55,11 @@
 	<div class="container">
 		<div class="box rotateBox">rotate</div>
 		<div class="box fadeBox">fade</div>
+	</div>
+
+	<div class="container">
+		<div class="box referenceBox">reference</div>
+		<div class="box directBox">direct</div>
 	</div>
 
 	<script src="../dist/basicScroll.min.js"></script>
@@ -112,8 +119,22 @@
 			}
 		})
 
+		const referenceBox = basicScroll.create({
+			elem: document.querySelector('.referenceBox'),
+			from: 'bottom-bottom',
+			to: 'top-top',
+			direct: document.querySelector('.directBox'),
+			props: {
+				'--o': {
+					from: .01,
+					to: .99
+				}
+			}
+		})
+
 		rotateBox.start()
 		fadeBox.start()
+		referenceBox.start()
 		easeBoxes.forEach((easeBox) => easeBox.start())
 
 	</script>
