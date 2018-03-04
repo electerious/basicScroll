@@ -19,11 +19,13 @@ basicScroll allows you to change CSS variables depending on the scroll position.
 
 ## Demos
 
-| Name | Description | Link |
-|:-----------|:------------|:------------|
+| Name | Description | Link | Author |
+|:-----------|:------------|:------------|:------------|
 | Default | Includes most features. | [Try it on CodePen](http://codepen.io/electerious/pen/QGNxxx) |
-| Parallax scene | A composition of multiple, moving layers. | [Try it on CodePen](http://codepen.io/electerious/pen/gLLozQ) |
 | Callback | Animate properties in JS via callbacks. | [Try it on CodePen](https://codepen.io/electerious/pen/goZRBv) |
+| Parallax scene | A composition of multiple, moving layers. | [Try it on CodePen](http://codepen.io/electerious/pen/gLLozQ) | [@electerious](https://twitter.com/electerious) |
+| Headline explosion | Animated letters. | [Try it on CodePen](https://codepen.io/electerious/pen/EQzxxJ) | [@electerious](https://twitter.com/electerious) |
+| Scroll and morph | Morph text using CSS clip-path. | [Try it on CodePen](https://codepen.io/ainalem/pen/jZzxrP) | [@mikaelainalem](https://twitter.com/mikaelainalem) |
 
 ## Features
 
