@@ -366,7 +366,7 @@ Examples:
 
 ### Direct mode
 
-Type: `Boolean` Default: `false` Optional: `true`
+Type: `Boolean|Node` Default: `false` Optional: `true`
 
 basicScroll applies all [props](#props) globally by default. This way you can use variables everywhere in your CSS, even when the instance tracks just one element. Set `direct` to `true` or to a DOM element to apply all [props](#props) directly to the [DOM Element/Node](#dom-elementnode) or to the DOM element you have specified. This also allows you to animate CSS properties, not just CSS variables.
 
