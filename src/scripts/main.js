@@ -109,6 +109,21 @@ const isRelativeValue = function(value) {
 }
 
 /**
+ * Returns the property that should be used according to direct.
+ * @param {Boolean|Node} direct
+ * @param {Object} properties
+ * @returns {*}
+ */
+const mapDirectToProperty = function(direct, properties) {
+
+	if (direct===true) return properties.elem
+	if (direct instanceof HTMLElement===true) return properties.direct
+
+	return properties.global
+
+}
+
+/**
  * Converts a relative value to an absolute value.
  * @param {String} value
  * @param {Node} elem - Anchor of the relative value.
@@ -154,7 +169,7 @@ const validate = function(data = {}) {
 	if (data.outside==null) data.outside = () => {}
 
 	if (data.direct===true && data.elem==null) throw new Error('Property `elem` required when `direct` is true')
-	if (data.direct!==true) data.direct = false
+	if (data.direct!==true && data.direct instanceof HTMLElement===false) data.direct = false
 
 	if (data.track!==false) data.track = true
 
@@ -219,9 +234,12 @@ const getProps = function(instance, scrollTop = getScrollTop()) {
 	const precisePercentage = current / (total / 100)
 	const normalizedPercentage = Math.min(Math.max(precisePercentage, 0), 100)
 
-	// Apply styles directly to element when direct is true.
-	// Apply them globally when direct is false.
-	const elem = data.direct===true ? data.elem : document.documentElement
+	// Get the element that should be used according to direct
+	const elem = mapDirectToProperty(data.direct, {
+		global: document.documentElement,
+		elem: data.elem,
+		direct: data.direct
+	})
 
 	// Generate an array with all new props
 	const props = Object.keys(data.props).reduce((acc, key) => {

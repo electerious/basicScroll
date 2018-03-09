@@ -19,11 +19,13 @@ basicScroll allows you to change CSS variables depending on the scroll position.
 
 ## Demos
 
-| Name | Description | Link |
-|:-----------|:------------|:------------|
+| Name | Description | Link | Author |
+|:-----------|:------------|:------------|:------------|
 | Default | Includes most features. | [Try it on CodePen](http://codepen.io/electerious/pen/QGNxxx) |
-| Parallax scene | A composition of multiple, moving layers. | [Try it on CodePen](http://codepen.io/electerious/pen/gLLozQ) |
 | Callback | Animate properties in JS via callbacks. | [Try it on CodePen](https://codepen.io/electerious/pen/goZRBv) |
+| Parallax scene | A composition of multiple, moving layers. | [Try it on CodePen](http://codepen.io/electerious/pen/gLLozQ) | [@electerious](https://twitter.com/electerious) |
+| Headline explosion | Animated letters. | [Try it on CodePen](https://codepen.io/electerious/pen/EQzxxJ) | [@electerious](https://twitter.com/electerious) |
+| Scroll and morph | Morph text using CSS clip-path. | [Try it on CodePen](https://codepen.io/ainalem/pen/jZzxrP) | [@mikaelainalem](https://twitter.com/mikaelainalem) |
 
 ## Features
 
@@ -364,23 +366,37 @@ Examples:
 
 ### Direct mode
 
-Type: `Boolean` Default: `false` Optional: `true`
+Type: `Boolean|Node` Default: `false` Optional: `true`
 
-basicScroll applies all [props](#props) globally by default. This way you can use variables everywhere in your CSS, even when the instance tracks just one element. Set `direct` to `true` to apply all styles directly to the [DOM Element/Node](#dom-elementnode). Setting `direct` to `true` also allows you to animate CSS properties, not just CSS variables.
+basicScroll applies all [props](#props) globally by default. This way you can use variables everywhere in your CSS, even when the instance tracks just one element. Set `direct` to `true` or to a DOM element to apply all [props](#props) directly to the [DOM Element/Node](#dom-elementnode) or to the DOM element you have specified. This also allows you to animate CSS properties, not just CSS variables.
+
+- `false`: Apply props globally (default)
+- `true`: Apply props to the [DOM Element/Node](#dom-elementnode)
+- `Node`: Apply props to a DOM Element/Node of your choice
 
 Examples:
 
 ```html
 <!-- direct: false -->
 <html style="--name: 0;">
-	<div class="element"></div>
+	<div class="trackedElem"></div>
+	<div class="anotherElem"></div>
 </html>
 ```
 
 ```html
 <!-- direct: true -->
 <html>
-	<div class="element" style="--name: 0;"></div>
+	<div class="trackedElem" style="--name: 0;"></div>
+	<div class="anotherElem"></div>
+</html>
+```
+
+```html
+<!-- direct: document.querySelector('.anotherElem') -->
+<html>
+	<div class="trackedElem"></div>
+	<div class="anotherElem" style="--name: 0;"></div>
 </html>
 ```
 
