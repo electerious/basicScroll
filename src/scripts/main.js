@@ -131,14 +131,14 @@ const mapDirectToProperty = function(direct, properties) {
  * @param {?Integer} viewportHeight - Height of the viewport.
  * @returns {String} value - Absolute value.
  */
-const relativeToAbsoluteValue = function(value, elem, scrollTop = getScrollTop(), viewportHeight = getViewportHeight()) {
+const relativeToAbsoluteValue = function(value, elem, offset, scrollTop = getScrollTop(), viewportHeight = getViewportHeight()) {
 
 	const elemSize = elem.getBoundingClientRect()
 
 	const elemAnchor = value.match(/^[a-z]+/)[0]
 	const viewportAnchor = value.match(/[a-z]+$/)[0]
 
-	let y = 0
+	let y = 0 + offset
 
 	if (viewportAnchor==='top') y -= 0
 	if (viewportAnchor==='middle') y -= viewportHeight / 2
@@ -172,6 +172,7 @@ const validate = function(data = {}) {
 	if (data.direct!==true && data.direct instanceof HTMLElement===false) data.direct = false
 
 	if (data.track!==false) data.track = true
+    if (data.offset==null) data.offset = 0
 
 	if (typeof data.inside!=='function') throw new Error('Property `inside` must be a function')
 	if (typeof data.outside!=='function') throw new Error('Property `outside` must be a function')
@@ -183,8 +184,8 @@ const validate = function(data = {}) {
 
 	} else {
 
-		if (isRelativeValue(data.from)===true) data.from = relativeToAbsoluteValue(data.from, data.elem)
-		if (isRelativeValue(data.to)===true) data.to = relativeToAbsoluteValue(data.to, data.elem)
+		if (isRelativeValue(data.from)===true) data.from = relativeToAbsoluteValue(data.from, data.elem, data.offset)
+		if (isRelativeValue(data.to)===true) data.to = relativeToAbsoluteValue(data.to, data.elem, data.offset)
 
 	}
 
@@ -420,6 +421,14 @@ export const create = function(data) {
 
 	}
 
+    // Offsets the instance
+    const _offset = () => {
+
+        // Define offset in pixels
+        offset = 0
+
+    }
+
 	// Assign instance to a variable so the instance can be used
 	// elsewhere in the current function.
 	const instance = {
@@ -429,7 +438,8 @@ export const create = function(data) {
 		update: _update,
 		start: _start,
 		stop: _stop,
-		destroy: _destroy
+		destroy: _destroy,
+        offset: _offset
 	}
 
 	// Store instance in global array and save the index

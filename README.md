@@ -272,6 +272,10 @@ The data object can include the following properties:
 	 */
 	from: null,
  	to: null,
+ 	/*
+	 * Position offset.
+	 */
+  offset: 0,
 	/*
 	 * Direct mode.
 	 */
@@ -364,6 +368,12 @@ Examples:
 	/* ... */
 }
 ```
+
+## Position offset
+
+Type: `Integer` Default: `0` Optional: `true`
+
+offset position of `from` and `to` values by `n` pixels
 
 ### Direct mode
 
