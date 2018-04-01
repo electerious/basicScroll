@@ -262,7 +262,7 @@ const getProps = function(instance, scrollTop = getScrollTop()) {
 		// Round to avoid unprecise values.
 		// The precision of floating point computations is only as precise as the precision it uses.
 		// http://stackoverflow.com/questions/588004/is-floating-point-math-broken
-		const rounded = Math.round(value * 100) / 100
+		const rounded = Math.round(value * 10000) / 10000
 
 		acc[key] = rounded + unit
 
