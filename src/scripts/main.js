@@ -1,8 +1,8 @@
-import parseUnit from 'parse-unit'
-import clonedeep from 'lodash.clonedeep'
-import eases from 'eases'
+import parseUnit from 'parse-unit';
+import clonedeep from 'lodash.clonedeep';
+import eases from 'eases';
 
-const instances = []
+const instances = [];
 
 /**
  * Debounces a function that will be triggered many times.
@@ -12,17 +12,17 @@ const instances = []
  */
 const debounce = function(fn, duration) {
 
-	let timeout = null
+	let timeout = null;
 
 	return (...args) => {
 
-		clearTimeout(timeout)
+		clearTimeout(timeout);
 
 		timeout = setTimeout(() => fn(...args), duration)
 
 	}
 
-}
+};
 
 /**
  * Returns all active instances from an array.
@@ -33,7 +33,7 @@ const getActiveInstances = function(instances) {
 
 	return instances.filter((instance) => instance!=null && instance.isActive())
 
-}
+};
 
 /**
  * Returns all tracked instances from an array.
@@ -44,7 +44,7 @@ const getTrackedInstances = function(instances) {
 
 	return instances.filter((instance) => instance!=null && instance.getData().track)
 
-}
+};
 
 
 /**
@@ -56,7 +56,7 @@ const getScrollTop = function() {
 	// Use scrollTop because is's faster than getBoundingClientRect()
 	return (document.scrollingElement || document.documentElement).scrollTop
 
-}
+};
 
 /**
  * Returns the height of the viewport.
@@ -66,7 +66,7 @@ const getViewportHeight = function() {
 
 	return (window.innerHeight || window.outerHeight)
 
-}
+};
 
 /**
  * Checks if a value is absolute.
@@ -78,7 +78,7 @@ const isAbsoluteValue = function(value) {
 
 	return isNaN(parseUnit(value)[0])===false
 
-}
+};
 
 /**
  * Parses an absolute value.
@@ -87,14 +87,14 @@ const isAbsoluteValue = function(value) {
  */
 const parseAbsoluteValue = function(value) {
 
-	const parsedValue = parseUnit(value)
+	const parsedValue = parseUnit(value);
 
 	return {
 		value: parsedValue[0],
 		unit: parsedValue[1]
 	}
 
-}
+};
 
 /**
  * Checks if a value is relative.
@@ -106,7 +106,7 @@ const isRelativeValue = function(value) {
 
 	return String(value).match(/^[a-z]+-[a-z]+$/)!==null
 
-}
+};
 
 /**
  * Returns the property that should be used according to direct.
@@ -116,12 +116,12 @@ const isRelativeValue = function(value) {
  */
 const mapDirectToProperty = function(direct, properties) {
 
-	if (direct===true) return properties.elem
-	if (direct instanceof HTMLElement===true) return properties.direct
+	if (direct===true) return properties.elem;
+	if (direct instanceof HTMLElement===true) return properties.direct;
 
 	return properties.global
 
-}
+};
 
 /**
  * Converts a relative value to an absolute value.
@@ -133,24 +133,24 @@ const mapDirectToProperty = function(direct, properties) {
  */
 const relativeToAbsoluteValue = function(value, elem, scrollTop = getScrollTop(), viewportHeight = getViewportHeight()) {
 
-	const elemSize = elem.getBoundingClientRect()
+	const elemSize = elem.getBoundingClientRect();
 
-	const elemAnchor = value.match(/^[a-z]+/)[0]
-	const viewportAnchor = value.match(/[a-z]+$/)[0]
+	const elemAnchor = value.match(/^[a-z]+/)[0];
+	const viewportAnchor = value.match(/[a-z]+$/)[0];
 
-	let y = 0
+	let y = 0;
 
-	if (viewportAnchor==='top') y -= 0
-	if (viewportAnchor==='middle') y -= viewportHeight / 2
-	if (viewportAnchor==='bottom') y -= viewportHeight
+	if (viewportAnchor==='top') y -= 0;
+	if (viewportAnchor==='middle') y -= viewportHeight / 2;
+	if (viewportAnchor==='bottom') y -= viewportHeight;
 
-	if (elemAnchor==='top') y += (elemSize.top + scrollTop)
-	if (elemAnchor==='middle') y += (elemSize.top + scrollTop) + elemSize.height / 2
-	if (elemAnchor==='bottom') y += (elemSize.top + scrollTop) + elemSize.height
+	if (elemAnchor==='top') y += (elemSize.top + scrollTop);
+	if (elemAnchor==='middle') y += (elemSize.top + scrollTop) + elemSize.height / 2;
+	if (elemAnchor==='bottom') y += (elemSize.top + scrollTop) + elemSize.height;
 
 	return `${ y }px`
 
-}
+};
 
 /**
  * Validates data and sets defaults for undefined properties.
@@ -160,59 +160,59 @@ const relativeToAbsoluteValue = function(value, elem, scrollTop = getScrollTop()
 const validate = function(data = {}) {
 
 	// Deep copy object to avoid changes by reference
-	data = clonedeep(data)
+	data = clonedeep(data);
 
-	if (data.from==null) throw new Error('Missing property `from`')
-	if (data.to==null) throw new Error('Missing property `to`')
+	if (data.from==null) throw new Error('Missing property `from`');
+	if (data.to==null) throw new Error('Missing property `to`');
 
-	if (data.inside==null) data.inside = () => {}
-	if (data.outside==null) data.outside = () => {}
+	if (data.inside==null) data.inside = () => {};
+	if (data.outside==null) data.outside = () => {};
 
-	if (data.direct===true && data.elem==null) throw new Error('Property `elem` required when `direct` is true')
-	if (data.direct!==true && data.direct instanceof HTMLElement===false) data.direct = false
+	if (data.direct===true && data.elem==null) throw new Error('Property `elem` required when `direct` is true');
+	if (data.direct!==true && data.direct instanceof HTMLElement===false) data.direct = false;
 
-	if (data.track!==false) data.track = true
+	if (data.track!==false) data.track = true;
 
-	if (typeof data.inside!=='function') throw new Error('Property `inside` must be a function')
-	if (typeof data.outside!=='function') throw new Error('Property `outside` must be a function')
+	if (typeof data.inside!=='function') throw new Error('Property `inside` must be a function');
+	if (typeof data.outside!=='function') throw new Error('Property `outside` must be a function');
 
 	if (data.elem==null) {
 
-		if (isAbsoluteValue(data.from)===false) throw new Error('Property `from` must be a absolute value when no `elem` has been provided')
+		if (isAbsoluteValue(data.from)===false) throw new Error('Property `from` must be a absolute value when no `elem` has been provided');
 		if (isAbsoluteValue(data.to)===false) throw new Error('Property `to` must be a absolute value when no `elem` has been provided')
 
 	} else {
 
-		if (isRelativeValue(data.from)===true) data.from = relativeToAbsoluteValue(data.from, data.elem)
+		if (isRelativeValue(data.from)===true) data.from = relativeToAbsoluteValue(data.from, data.elem);
 		if (isRelativeValue(data.to)===true) data.to = relativeToAbsoluteValue(data.to, data.elem)
 
 	}
 
-	data.from = parseAbsoluteValue(data.from)
-	data.to = parseAbsoluteValue(data.to)
+	data.from = parseAbsoluteValue(data.from);
+	data.to = parseAbsoluteValue(data.to);
 
-	if (data.props==null) data.props = {}
+	if (data.props==null) data.props = {};
 
 	Object.keys(data.props).forEach((key) => {
 
-		const prop = data.props[key]
+		const prop = data.props[key];
 
-		if (isAbsoluteValue(prop.from)===false) throw new Error('Property `from` of prop must be a absolute value')
-		if (isAbsoluteValue(prop.to)===false) throw new Error('Property `from` of prop must be a absolute value')
+		if (isAbsoluteValue(prop.from)===false) throw new Error('Property `from` of prop must be a absolute value');
+		if (isAbsoluteValue(prop.to)===false) throw new Error('Property `from` of prop must be a absolute value');
 
-		prop.from = parseAbsoluteValue(prop.from)
-		prop.to = parseAbsoluteValue(prop.to)
+		prop.from = parseAbsoluteValue(prop.from);
+		prop.to = parseAbsoluteValue(prop.to);
 
-		if (typeof prop.timing==='string' && eases[prop.timing]==null) throw new Error('Unknown timing for property `timing` of prop')
+		if (typeof prop.timing==='string' && eases[prop.timing]==null) throw new Error('Unknown timing for property `timing` of prop');
 
-		if (prop.timing==null) prop.timing = eases['linear']
+		if (prop.timing==null) prop.timing = eases['linear'];
 		if (typeof prop.timing==='string') prop.timing = eases[prop.timing]
 
-	})
+	});
 
 	return data
 
-}
+};
 
 /**
  * Calculates the props of an instance.
@@ -222,69 +222,69 @@ const validate = function(data = {}) {
  */
 const getProps = function(instance, scrollTop = getScrollTop()) {
 
-	const data = instance.getData()
+	const data = instance.getData();
 
 	// 100% in pixel
-	const total = data.to.value - data.from.value
+	const total = data.to.value - data.from.value;
 
 	// Pixel scrolled
-	const current = scrollTop - data.from.value
+	const current = scrollTop - data.from.value;
 
 	// Percent scrolled
-	const precisePercentage = current / (total / 100)
-	const normalizedPercentage = Math.min(Math.max(precisePercentage, 0), 100)
+	const precisePercentage = current / (total / 100);
+	const normalizedPercentage = Math.min(Math.max(precisePercentage, 0), 100);
 
 	// Get the element that should be used according to direct
 	const elem = mapDirectToProperty(data.direct, {
 		global: document.documentElement,
 		elem: data.elem,
 		direct: data.direct
-	})
+	});
 
 	// Generate an array with all new props
 	const props = Object.keys(data.props).reduce((acc, key) => {
 
-		const prop = data.props[key]
+		const prop = data.props[key];
 
 		// Use the unit of from OR to. It's valid to animate from '0' to '100px' and
 		// '0' should be treated as 'px', too. Unit will be an empty string when no unit given.
-		const unit = prop.from.unit || prop.to.unit
+		const unit = prop.from.unit || prop.to.unit;
 
 		// The value that should be interpolated
-		const diff = prop.from.value - prop.to.value
+		const diff = prop.from.value - prop.to.value;
 
 		// All easing functions only remap a time value, and all have the same signature.
 		// Typically a value between 0 and 1, and it returns a new float that has been eased.
-		const time = prop.timing(normalizedPercentage / 100)
+		const time = prop.timing(normalizedPercentage / 100);
 
-		const value = prop.from.value - diff * time
+		const value = prop.from.value - diff * time;
 
 		// Round to avoid unprecise values.
 		// The precision of floating point computations is only as precise as the precision it uses.
 		// http://stackoverflow.com/questions/588004/is-floating-point-math-broken
-		const rounded = Math.round(value * 10000) / 10000
+		const rounded = Math.round(value * 10000) / 10000;
 
-		acc[key] = rounded + unit
+		acc[key] = rounded + unit;
 
 		return acc
 
-	}, {})
+	}, {});
 
 	// Use precise percentage to check if the viewport is between from and to.
 	// Would always return true when using the normalized percentage.
-	const isInside = (precisePercentage>=0 && precisePercentage<=100)
-	const isOutside = (precisePercentage<0 || precisePercentage>100)
+	const isInside = (precisePercentage>=0 && precisePercentage<=100);
+	const isOutside = (precisePercentage<0 || precisePercentage>100);
 
 	// Execute callbacks
-	if (isInside===true) data.inside(instance, precisePercentage, props)
-	if (isOutside===true) data.outside(instance, precisePercentage, props)
+	if (isInside===true) data.inside(instance, precisePercentage, props);
+	if (isOutside===true) data.outside(instance, precisePercentage, props);
 
 	return {
 		elem,
 		props
 	}
 
-}
+};
 
 /**
  * Adds a property with the specified name and value to a given style object.
@@ -295,7 +295,7 @@ const setProp = function(elem, prop) {
 
 	elem.style.setProperty(prop.key, prop.value)
 
-}
+};
 
 /**
  * Adds properties to a given style object.
@@ -309,7 +309,7 @@ const setProps = function(elem, props) {
 		value: props[key]
 	}))
 
-}
+};
 
 /**
  * Gets and sets new props when the user has scrolled and when there are active instances.
@@ -327,28 +327,28 @@ const loop = function(style, previousScrollTop) {
 		// are sometimes faster than .bind or .apply.
 		requestAnimationFrame(() => loop(style, previousScrollTop))
 
-	}
+	};
 
 	// Get all active instances
-	const activeInstances = getActiveInstances(instances)
+	const activeInstances = getActiveInstances(instances);
 
 	// Only continue when active instances available
-	if (activeInstances.length===0) return repeat()
+	if (activeInstances.length===0) return repeat();
 
-	const scrollTop = getScrollTop()
+	const scrollTop = getScrollTop();
 
 	// Only continue when scrollTop has changed
-	if (previousScrollTop===scrollTop) return repeat()
-	else previousScrollTop = scrollTop
+	if (previousScrollTop===scrollTop) return repeat();
+	else previousScrollTop = scrollTop;
 
 	// Get and set new props of each instance
 	activeInstances
 		.map((instance) => getProps(instance, scrollTop))
-		.forEach(({ elem, props }) => setProps(elem, props))
+		.forEach(({ elem, props }) => setProps(elem, props));
 
 	repeat()
 
-}
+};
 
 /**
  * Creats a new instance.
@@ -358,58 +358,58 @@ const loop = function(style, previousScrollTop) {
 export const create = function(data) {
 
 	// Store the parsed data
-	let _data = null
+	let _data = null;
 
 	// Store if instance is started or stopped
-	let active = false
+	let active = false;
 
 	// Returns if instance is started or stopped
 	const _isActive = () => {
 
 		return active
 
-	}
+	};
 
 	// Returns the parsed and calculated data
 	const _getData = function() {
 
 		return _data
 
-	}
+	};
 
 	// Parses and calculates data
 	const _calculate = function() {
 
 		_data = validate(data)
 
-	}
+	};
 
 	// Update props
 	const _update = () => {
 
 		// Get new props
-		const { elem, props } = getProps(instance)
+		const { elem, props } = getProps(instance);
 
 		// Set new props
-		setProps(elem, props)
+		setProps(elem, props);
 
 		return props
 
-	}
+	};
 
 	// Starts to animate
 	const _start = () => {
 
 		active = true
 
-	}
+	};
 
 	// Stops to animate
 	const _stop = () => {
 
 		active = false
 
-	}
+	};
 
 	// Destroys the instance
 	const _destroy = () => {
@@ -418,7 +418,7 @@ export const create = function(data) {
 		// that the index of other instances changes.
 		instances[index] = undefined
 
-	}
+	};
 
 	// Assign instance to a variable so the instance can be used
 	// elsewhere in the current function.
@@ -430,32 +430,32 @@ export const create = function(data) {
 		start: _start,
 		stop: _stop,
 		destroy: _destroy
-	}
+	};
 
 	// Store instance in global array and save the index
-	const index = instances.push(instance) - 1
+	const index = instances.push(instance) - 1;
 
 	// Calculate data for the first time
-	instance.calculate()
+	instance.calculate();
 
 	return instance
 
-}
+};
 
 // Start to loop
-loop()
+loop();
 
 // Recalculate and update instances when the window size changes
 window.addEventListener('resize', debounce(() => {
 
 	// Get all tracked instances
-	const trackedInstances = getTrackedInstances(instances)
+	const trackedInstances = getTrackedInstances(instances);
 
 	trackedInstances.forEach((instance) => {
 
-		instance.calculate()
+		instance.calculate();
 		instance.update()
 
 	})
 
-}, 50))
+}, 50));
