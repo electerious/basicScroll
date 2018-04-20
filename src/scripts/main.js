@@ -31,7 +31,7 @@ const debounce = function(fn, duration) {
  */
 const getActiveInstances = function(instances) {
 
-	return instances.filter((instance) => instance!=null && instance.isActive())
+	return instances.filter((instance) => instance != null && instance.isActive())
 
 }
 
@@ -42,7 +42,7 @@ const getActiveInstances = function(instances) {
  */
 const getTrackedInstances = function(instances) {
 
-	return instances.filter((instance) => instance!=null && instance.getData().track)
+	return instances.filter((instance) => instance != null && instance.getData().track)
 
 }
 
@@ -76,7 +76,7 @@ const getViewportHeight = function() {
  */
 const isAbsoluteValue = function(value) {
 
-	return isNaN(parseUnit(value)[0])===false
+	return isNaN(parseUnit(value)[0]) === false
 
 }
 
@@ -91,7 +91,7 @@ const parseAbsoluteValue = function(value) {
 
 	return {
 		value: parsedValue[0],
-		unit: parsedValue[1]
+		unit: parsedValue[1],
 	}
 
 }
@@ -104,7 +104,7 @@ const parseAbsoluteValue = function(value) {
  */
 const isRelativeValue = function(value) {
 
-	return String(value).match(/^[a-z]+-[a-z]+$/)!==null
+	return String(value).match(/^[a-z]+-[a-z]+$/) !== null
 
 }
 
@@ -116,8 +116,8 @@ const isRelativeValue = function(value) {
  */
 const mapDirectToProperty = function(direct, properties) {
 
-	if (direct===true) return properties.elem
-	if (direct instanceof HTMLElement===true) return properties.direct
+	if (direct === true) return properties.elem
+	if (direct instanceof HTMLElement === true) return properties.direct
 
 	return properties.global
 
@@ -140,13 +140,13 @@ const relativeToAbsoluteValue = function(value, elem, scrollTop = getScrollTop()
 
 	let y = 0
 
-	if (viewportAnchor==='top') y -= 0
-	if (viewportAnchor==='middle') y -= viewportHeight / 2
-	if (viewportAnchor==='bottom') y -= viewportHeight
+	if (viewportAnchor === 'top') y -= 0
+	if (viewportAnchor === 'middle') y -= viewportHeight / 2
+	if (viewportAnchor === 'bottom') y -= viewportHeight
 
-	if (elemAnchor==='top') y += (elemSize.top + scrollTop)
-	if (elemAnchor==='middle') y += (elemSize.top + scrollTop) + elemSize.height / 2
-	if (elemAnchor==='bottom') y += (elemSize.top + scrollTop) + elemSize.height
+	if (elemAnchor === 'top') y += (elemSize.top + scrollTop)
+	if (elemAnchor === 'middle') y += (elemSize.top + scrollTop) + elemSize.height / 2
+	if (elemAnchor === 'bottom') y += (elemSize.top + scrollTop) + elemSize.height
 
 	return `${ y }px`
 
@@ -162,51 +162,51 @@ const validate = function(data = {}) {
 	// Deep copy object to avoid changes by reference
 	data = clonedeep(data)
 
-	if (data.from==null) throw new Error('Missing property `from`')
-	if (data.to==null) throw new Error('Missing property `to`')
+	if (data.from == null) throw new Error('Missing property `from`')
+	if (data.to == null) throw new Error('Missing property `to`')
 
-	if (data.inside==null) data.inside = () => {}
-	if (data.outside==null) data.outside = () => {}
+	if (data.inside == null) data.inside = () => {}
+	if (data.outside == null) data.outside = () => {}
 
-	if (data.direct===true && data.elem==null) throw new Error('Property `elem` required when `direct` is true')
-	if (data.direct!==true && data.direct instanceof HTMLElement===false) data.direct = false
+	if (data.direct === true && data.elem == null) throw new Error('Property `elem` required when `direct` is true')
+	if (data.direct !== true && data.direct instanceof HTMLElement === false) data.direct = false
 
-	if (data.track!==false) data.track = true
+	if (data.track !== false) data.track = true
 
-	if (typeof data.inside!=='function') throw new Error('Property `inside` must be a function')
-	if (typeof data.outside!=='function') throw new Error('Property `outside` must be a function')
+	if (typeof data.inside !== 'function') throw new Error('Property `inside` must be a function')
+	if (typeof data.outside !== 'function') throw new Error('Property `outside` must be a function')
 
-	if (data.elem==null) {
+	if (data.elem == null) {
 
-		if (isAbsoluteValue(data.from)===false) throw new Error('Property `from` must be a absolute value when no `elem` has been provided')
-		if (isAbsoluteValue(data.to)===false) throw new Error('Property `to` must be a absolute value when no `elem` has been provided')
+		if (isAbsoluteValue(data.from) === false) throw new Error('Property `from` must be a absolute value when no `elem` has been provided')
+		if (isAbsoluteValue(data.to) === false) throw new Error('Property `to` must be a absolute value when no `elem` has been provided')
 
 	} else {
 
-		if (isRelativeValue(data.from)===true) data.from = relativeToAbsoluteValue(data.from, data.elem)
-		if (isRelativeValue(data.to)===true) data.to = relativeToAbsoluteValue(data.to, data.elem)
+		if (isRelativeValue(data.from) === true) data.from = relativeToAbsoluteValue(data.from, data.elem)
+		if (isRelativeValue(data.to) === true) data.to = relativeToAbsoluteValue(data.to, data.elem)
 
 	}
 
 	data.from = parseAbsoluteValue(data.from)
 	data.to = parseAbsoluteValue(data.to)
 
-	if (data.props==null) data.props = {}
+	if (data.props == null) data.props = {}
 
 	Object.keys(data.props).forEach((key) => {
 
 		const prop = data.props[key]
 
-		if (isAbsoluteValue(prop.from)===false) throw new Error('Property `from` of prop must be a absolute value')
-		if (isAbsoluteValue(prop.to)===false) throw new Error('Property `from` of prop must be a absolute value')
+		if (isAbsoluteValue(prop.from) === false) throw new Error('Property `from` of prop must be a absolute value')
+		if (isAbsoluteValue(prop.to) === false) throw new Error('Property `from` of prop must be a absolute value')
 
 		prop.from = parseAbsoluteValue(prop.from)
 		prop.to = parseAbsoluteValue(prop.to)
 
-		if (typeof prop.timing==='string' && eases[prop.timing]==null) throw new Error('Unknown timing for property `timing` of prop')
+		if (typeof prop.timing === 'string' && eases[prop.timing] == null) throw new Error('Unknown timing for property `timing` of prop')
 
-		if (prop.timing==null) prop.timing = eases['linear']
-		if (typeof prop.timing==='string') prop.timing = eases[prop.timing]
+		if (prop.timing == null) prop.timing = eases['linear']
+		if (typeof prop.timing === 'string') prop.timing = eases[prop.timing]
 
 	})
 
@@ -238,7 +238,7 @@ const getProps = function(instance, scrollTop = getScrollTop()) {
 	const elem = mapDirectToProperty(data.direct, {
 		global: document.documentElement,
 		elem: data.elem,
-		direct: data.direct
+		direct: data.direct,
 	})
 
 	// Generate an array with all new props
@@ -272,16 +272,16 @@ const getProps = function(instance, scrollTop = getScrollTop()) {
 
 	// Use precise percentage to check if the viewport is between from and to.
 	// Would always return true when using the normalized percentage.
-	const isInside = (precisePercentage>=0 && precisePercentage<=100)
-	const isOutside = (precisePercentage<0 || precisePercentage>100)
+	const isInside = (precisePercentage >= 0 && precisePercentage <= 100)
+	const isOutside = (precisePercentage < 0 || precisePercentage > 100)
 
 	// Execute callbacks
-	if (isInside===true) data.inside(instance, precisePercentage, props)
-	if (isOutside===true) data.outside(instance, precisePercentage, props)
+	if (isInside === true) data.inside(instance, precisePercentage, props)
+	if (isOutside === true) data.outside(instance, precisePercentage, props)
 
 	return {
 		elem,
-		props
+		props,
 	}
 
 }
@@ -306,7 +306,7 @@ const setProps = function(elem, props) {
 
 	Object.keys(props).forEach((key) => setProp(elem, {
 		key: key,
-		value: props[key]
+		value: props[key],
 	}))
 
 }
@@ -333,12 +333,12 @@ const loop = function(style, previousScrollTop) {
 	const activeInstances = getActiveInstances(instances)
 
 	// Only continue when active instances available
-	if (activeInstances.length===0) return repeat()
+	if (activeInstances.length === 0) return repeat()
 
 	const scrollTop = getScrollTop()
 
 	// Only continue when scrollTop has changed
-	if (previousScrollTop===scrollTop) return repeat()
+	if (previousScrollTop === scrollTop) return repeat()
 	else previousScrollTop = scrollTop
 
 	// Get and set new props of each instance
@@ -429,7 +429,7 @@ export const create = function(data) {
 		update: _update,
 		start: _start,
 		stop: _stop,
-		destroy: _destroy
+		destroy: _destroy,
 	}
 
 	// Store instance in global array and save the index
