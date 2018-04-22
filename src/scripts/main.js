@@ -91,7 +91,7 @@ const parseAbsoluteValue = function(value) {
 
 	return {
 		value: parsedValue[0],
-		unit: parsedValue[1],
+		unit: parsedValue[1]
 	}
 
 }
@@ -238,7 +238,7 @@ const getProps = function(instance, scrollTop = getScrollTop()) {
 	const elem = mapDirectToProperty(data.direct, {
 		global: document.documentElement,
 		elem: data.elem,
-		direct: data.direct,
+		direct: data.direct
 	})
 
 	// Generate an array with all new props
@@ -281,7 +281,7 @@ const getProps = function(instance, scrollTop = getScrollTop()) {
 
 	return {
 		elem,
-		props,
+		props
 	}
 
 }
@@ -306,7 +306,7 @@ const setProps = function(elem, props) {
 
 	Object.keys(props).forEach((key) => setProp(elem, {
 		key: key,
-		value: props[key],
+		value: props[key]
 	}))
 
 }
@@ -429,7 +429,7 @@ export const create = function(data) {
 		update: _update,
 		start: _start,
 		stop: _stop,
-		destroy: _destroy,
+		destroy: _destroy
 	}
 
 	// Store instance in global array and save the index
