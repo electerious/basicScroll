@@ -1,8 +1,8 @@
 'use strict'
 
-let name = require('./package.json').moduleName
-let gulp = require('gulp')
-let tasks = require('@electerious/basictasks')(gulp, name)
+const name = require('./package.json').moduleName
+const gulp = require('gulp')
+const tasks = require('@electerious/basictasks')(gulp, name)
 
 const scripts = tasks.scripts({
 	from: './src/scripts/main.js',
