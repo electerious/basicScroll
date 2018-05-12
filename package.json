@@ -7,7 +7,11 @@
   ],
   "description": "Standalone parallax scrolling for mobile and desktop with CSS variables",
   "main": "dist/basicScroll.min.js",
-  "keywords": [],
+  "keywords": [
+    "parallax",
+    "scroll",
+    "scrolling"
+  ],
   "scripts": {
     "start": "gulp watch",
     "compile": "gulp"
