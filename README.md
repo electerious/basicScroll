@@ -544,6 +544,7 @@ Examples:
 ## Related
 
 - [ngx-basicscroll](https://github.com/theunreal/ngx-basicscroll) - Angular wrapper for basicScroll
+- [react-basic-scroll](https://github.com/liorbd/react-basic-scroll) - React wrapper for basicScroll
 
 ## Tips
 
