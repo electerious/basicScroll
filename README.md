@@ -66,7 +66,11 @@ Include the JS file at the end of your `body` tag…
 …or skip the JS file and use basicScroll as a module:
 
 ```js
-const basicScroll = require('basicScroll')
+const basicScroll = require('basicscroll')
+```
+
+```js
+import * as basicScroll from 'basicscroll'
 ```
 
 ## Usage
