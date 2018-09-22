@@ -47,14 +47,14 @@ Some of these APIs are capable of being polyfilled in older browsers. Check the 
 
 ## Setup
 
-We recommend to install basicScroll using [Bower](https://bower.io/) or [npm](https://npmjs.com).
-
-```sh
-bower install basicScroll
-```
+We recommend to install basicScroll using [npm](https://npmjs.com) or [yarn](https://yarnpkg.com).
 
 ```sh
 npm install basicscroll
+```
+
+```sh
+yarn add basicscroll
 ```
 
 Include the JS file at the end of your `body` tag…
@@ -548,7 +548,6 @@ Examples:
 ## Related
 
 - [ngx-basicscroll](https://github.com/theunreal/ngx-basicscroll) - Angular wrapper for basicScroll
-- [react-basic-scroll](https://github.com/liorbd/react-basic-scroll) - React wrapper for basicScroll
 
 ## Tips
 
