@@ -268,7 +268,7 @@ The data object can include the following properties:
 ```js
 {
 	/*
-	 * DOM Element/Node.
+	 * DOM element/node.
 	 */
 	elem: null,
 	/*
@@ -311,11 +311,11 @@ The data object can include the following properties:
 }
 ```
 
-### DOM Element/Node
+### DOM element/node
 
 Type: `Node` Default: `null` Optional: `true`
 
-A DOM Element/Node.
+A DOM element/node.
 
 The position and size of the element will be used to convert the [start and stop position](#start-and-stop-position) to absolute values. How else is basicScroll supposed to know when to start and stop an animation with relative values?
 
@@ -336,7 +336,7 @@ Type: `Integer|String` Default: `null` Optional: `false`
 
 basicScroll starts to animate the [props](#props) when the scroll position is above `from` and below `to`. Absolute and relative values are allowed.
 
-Relative values require a [DOM Element/Node](#dom-elementnode). The first part of the value describes the element position, the last part describes the viewport position: `<element>-<viewport>`. `middle-bottom` in `from` specifies that the animation starts when the middle of the element reaches the bottom of the viewport.
+Relative values require a [DOM element/node](#dom-elementnode). The first part of the value describes the element position, the last part describes the viewport position: `<element>-<viewport>`. `middle-bottom` in `from` specifies that the animation starts when the middle of the element reaches the bottom of the viewport.
 
 Known relative values: `top-top`, `top-middle`, `top-bottom`, `middle-top`, `middle-middle`, `middle-bottom`, `bottom-top`, `bottom-middle`, `bottom-bottom`
 
@@ -373,11 +373,11 @@ Examples:
 
 Type: `Boolean|Node` Default: `false` Optional: `true`
 
-basicScroll applies all [props](#props) globally by default. This way you can use variables everywhere in your CSS, even when the instance tracks just one element. Set `direct` to `true` or to a DOM element to apply all [props](#props) directly to the [DOM Element/Node](#dom-elementnode) or to the DOM element you have specified. This also allows you to animate CSS properties, not just CSS variables.
+basicScroll applies all [props](#props) globally by default. This way you can use variables everywhere in your CSS, even when the instance tracks just one element. Set `direct` to `true` or to a DOM element/node to apply all [props](#props) directly to the [DOM element/node](#dom-elementnode) or to the DOM element/node you have specified. This also allows you to animate CSS properties, not just CSS variables.
 
 - `false`: Apply props globally (default)
-- `true`: Apply props to the [DOM Element/Node](#dom-elementnode)
-- `Node`: Apply props to a DOM Element/Node of your choice
+- `true`: Apply props to the [DOM element/node](#dom-elementnode)
+- `Node`: Apply props to a DOM element/node of your choice
 
 Examples:
 
