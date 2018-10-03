@@ -32,7 +32,6 @@
   },
   "dependencies": {
     "eases": "^1.0.8",
-    "lodash.clonedeep": "^4.5.0",
     "parse-unit": "^1.0.1"
   }
 }

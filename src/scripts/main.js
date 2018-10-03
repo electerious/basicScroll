@@ -1,5 +1,4 @@
 import parseUnit from 'parse-unit'
-import clonedeep from 'lodash.clonedeep'
 import eases from 'eases'
 
 const instances = []
@@ -159,22 +158,23 @@ const relativeToAbsoluteValue = function(value, elem, scrollTop = getScrollTop()
  */
 const validate = function(data = {}) {
 
-	// Deep copy object to avoid changes by reference
-	data = clonedeep(data)
-
-	if (data.from == null) throw new Error('Missing property `from`')
-	if (data.to == null) throw new Error('Missing property `to`')
+	// Copy root object to avoid changes by reference
+	data = Object.assign({}, data)
 
 	if (data.inside == null) data.inside = () => {}
 	if (data.outside == null) data.outside = () => {}
+	if (data.direct == null) data.direct = false
+	if (data.track == null) data.track = true
+	if (data.props == null) data.props = {}
 
-	if (data.direct === true && data.elem == null) throw new Error('Property `elem` required when `direct` is true')
-	if (data.direct !== true && data.direct instanceof HTMLElement === false) data.direct = false
-
-	if (data.track !== false) data.track = true
-
-	if (typeof data.inside !== 'function') throw new Error('Property `inside` must be a function')
-	if (typeof data.outside !== 'function') throw new Error('Property `outside` must be a function')
+	if (data.from == null) throw new Error('Missing property `from`')
+	if (data.to == null) throw new Error('Missing property `to`')
+	if (typeof data.inside !== 'function') throw new Error('Property `inside` must be undefined or a function')
+	if (typeof data.outside !== 'function') throw new Error('Property `outside` must be undefined or a function')
+	if (typeof data.direct !== 'boolean' && data.direct instanceof HTMLElement === false) throw new Error('Property `direct` must be undefined, a boolean or a DOM element/node')
+	if (data.direct === true && data.elem == null) throw new Error('Property `elem` is required when `direct` is true')
+	if (typeof data.track !== 'boolean') throw new Error('Property `track` must be undefined or a boolean')
+	if (typeof data.props !== 'object') throw new Error('Property `props` must be undefined or an object')
 
 	if (data.elem == null) {
 
@@ -191,11 +191,11 @@ const validate = function(data = {}) {
 	data.from = parseAbsoluteValue(data.from)
 	data.to = parseAbsoluteValue(data.to)
 
-	if (data.props == null) data.props = {}
+	// Create a new props object to avoid changes by reference
+	data.props = Object.keys(data.props).reduce((acc, key) => {
 
-	Object.keys(data.props).forEach((key) => {
-
-		const prop = data.props[key]
+		// Copy prop object to avoid changes by reference
+		const prop = Object.assign({}, data.props[key])
 
 		if (isAbsoluteValue(prop.from) === false) throw new Error('Property `from` of prop must be a absolute value')
 		if (isAbsoluteValue(prop.to) === false) throw new Error('Property `from` of prop must be a absolute value')
@@ -203,12 +203,18 @@ const validate = function(data = {}) {
 		prop.from = parseAbsoluteValue(prop.from)
 		prop.to = parseAbsoluteValue(prop.to)
 
-		if (typeof prop.timing === 'string' && eases[prop.timing] == null) throw new Error('Unknown timing for property `timing` of prop')
-
 		if (prop.timing == null) prop.timing = eases['linear']
+
+		if (typeof prop.timing !== 'string' && typeof prop.timing !== 'function') throw new Error('Property `timing` of prop must be undefined, a string or a function')
+
+		if (typeof prop.timing === 'string' && eases[prop.timing] == null) throw new Error('Unknown timing for property `timing` of prop')
 		if (typeof prop.timing === 'string') prop.timing = eases[prop.timing]
 
-	})
+		acc[key] = prop
+
+		return acc
+
+	}, {})
 
 	return data
 
@@ -241,7 +247,7 @@ const getProps = function(instance, scrollTop = getScrollTop()) {
 		direct: data.direct
 	})
 
-	// Generate an array with all new props
+	// Generate an object with all new props
 	const props = Object.keys(data.props).reduce((acc, key) => {
 
 		const prop = data.props[key]
