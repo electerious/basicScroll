@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [3.0.0] - 2018-10-03
 
-### New
+### Added
 
 - Reduced the size of the minified version by almost 50%
 - `Object.assign` must be supported by the browser
@@ -23,14 +23,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [2.1.0] - 2018-03-09
 
-### New
+### Added
 
 - `direct` option can be used to apply properties to another element than `elem` (#11)
 - More demos
 
 ## [2.0.0] - 2018-02-25
 
-### New
+### Added
 
 - [Track window size changes](README.md#track-window-size-changes) and recalculate and update instances when the size changes (#7)
 - `track` option to disable [window size tracking](README.md#track-window-size-changes) for each instance individually (#7)
@@ -43,14 +43,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [1.3.0] - 2018-02-24
 
-### New
+### Added
 
 - Callback demo
 - Destroy method (#6)
 
 ## [1.2.0] - 2018-01-18
 
-### New
+### Added
 
 - `inside` and `outside` callbacks now receive the calculated properties
 
@@ -68,7 +68,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [1.1.3] - 2017-08-08
 
-### New
+### Added
 
 - Added a changelog
 
