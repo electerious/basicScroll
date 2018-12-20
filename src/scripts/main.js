@@ -462,10 +462,8 @@ if (isBrowser === true) {
 		const trackedInstances = getTrackedInstances(instances)
 
 		trackedInstances.forEach((instance) => {
-
 			instance.calculate()
 			instance.update()
-
 		})
 
 	}, 50))
