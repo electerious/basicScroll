@@ -52,7 +52,7 @@ const getTrackedInstances = function(instances) {
  */
 const getScrollTop = function() {
 
-	// Use scrollTop because is's faster than getBoundingClientRect()
+	// Use scrollTop because it's faster than getBoundingClientRect()
 	return (document.scrollingElement || document.documentElement).scrollTop
 
 }
@@ -357,7 +357,7 @@ const loop = function(style, previousScrollTop) {
 }
 
 /**
- * Creats a new instance.
+ * Creates a new instance.
  * @param {Object} data
  * @returns {Object} instance
  */
