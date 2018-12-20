@@ -341,6 +341,8 @@ Relative values require a [DOM element/node](#dom-elementnode). The first part o
 
 Known relative values: `top-top`, `top-middle`, `top-bottom`, `middle-top`, `middle-middle`, `middle-bottom`, `bottom-top`, `bottom-middle`, `bottom-bottom`
 
+It's possible to track a custom anchor when you want to animate for [a specific viewport height](https://github.com/electerious/basicScroll/issues/26#issuecomment-449130809) or when you need to [start and end with an offset](https://github.com/electerious/basicScroll/issues/17#issuecomment-449134650).
+
 Examples:
 
 ```js
