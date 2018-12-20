@@ -2,6 +2,7 @@ import parseUnit from 'parse-unit'
 import eases from 'eases'
 
 const instances = []
+const isBrowser = typeof window !== 'undefined'
 
 /**
  * Debounces a function that will be triggered many times.
@@ -448,20 +449,29 @@ export const create = function(data) {
 
 }
 
-// Start to loop
-loop()
+// Only run basicScroll when executed in a browser environment
+if (isBrowser === true) {
 
-// Recalculate and update instances when the window size changes
-window.addEventListener('resize', debounce(() => {
+	// Start to loop
+	loop()
 
-	// Get all tracked instances
-	const trackedInstances = getTrackedInstances(instances)
+	// Recalculate and update instances when the window size changes
+	window.addEventListener('resize', debounce(() => {
 
-	trackedInstances.forEach((instance) => {
+		// Get all tracked instances
+		const trackedInstances = getTrackedInstances(instances)
 
-		instance.calculate()
-		instance.update()
+		trackedInstances.forEach((instance) => {
 
-	})
+			instance.calculate()
+			instance.update()
 
-}, 50))
+		})
+
+	}, 50))
+
+} else {
+
+	console.warn('basicScroll is not executing because you are using it in an environment without a `window` object')
+
+}
