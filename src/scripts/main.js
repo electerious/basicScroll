@@ -168,14 +168,13 @@ const isRelativeValue = function(value) {
 
 /**
  * Returns the property that should be used according to direct.
- * @param {Boolean|Node} direct
- * @param {Object} properties
- * @returns {*}
+ * @param {{global: HTMLElement, elem: HTMLElement, direct: boolean | HTMLElement}} properties
+ * @returns {HTMLElement}
  */
-const mapDirectToProperty = function(direct, properties) {
+const mapDirectToProperty = function(properties) {
 
-	if (direct === true) return properties.elem
-	if (direct instanceof HTMLElement === true) return properties.direct
+	if (properties.direct === true) return properties.elem
+	if (properties.direct instanceof HTMLElement) return properties.direct
 
 	return properties.global
 
@@ -300,7 +299,7 @@ const getProps = function(instance, scrollTop = getScrollTop()) {
 	const normalizedPercentage = Math.min(Math.max(precisePercentage, 0), 100)
 
 	// Get the element that should be used according to direct
-	const elem = mapDirectToProperty(data.direct, {
+	const elem = mapDirectToProperty({
 		global: document.documentElement,
 		elem: data.elem,
 		direct: data.direct
