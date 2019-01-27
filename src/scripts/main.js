@@ -1,3 +1,4 @@
+// @ts-check
 import parseUnit from 'parse-unit'
 import eases from 'eases'
 
