@@ -2,6 +2,63 @@
 import parseUnit from 'parse-unit'
 import eases from 'eases'
 
+/** 
+ * The ScrollInstanceOptions is the option object 
+ * to setup a new BasicScroll instance
+ * 
+ * @typedef {{
+	elem?: HTMLElement,
+	from: string,
+ 	to: string,
+	direct?: boolean | HTMLElement,
+	track?: boolean,
+	inside?: (instance: ScrollInstance, percentage: number, props: {[cssPropName: string]: string;}) => void,
+	outside?: (instance: ScrollInstance, percentage: number, props: {[cssPropName: string]: string;}) => void,
+	props?: {
+		[cssPropertyName: string]: {
+			from: string | number,
+			to: string | number,
+			timing?: (keyof typeof eases) | ((t: number) => number)
+		}
+	}
+}} ScrollInstanceOptions
+*/
+
+/**
+ * The parsed version of ScrollInstanceOptions
+ * 
+ * @typedef {{
+	elem?: HTMLElement,
+	from: {value: number, unit: string},
+ 	to: {value: number, unit: string},
+	direct: boolean | HTMLElement,
+	track: boolean,
+	inside: (instance, percentage, props) => void,
+	outside: (instance, percentage, props) => void,
+	props: {
+		[cssPropertyName: string]: {
+			from: {value: number, unit: string},
+			to: {value: number, unit: string},
+			timing: (t: number) => number
+		}
+	}
+}} ParsedScrollInstanceOptions
+*/
+
+/** 
+ * The ScrollInstance is the runtime instance for each
+ * Scroll Watcher
+ *  
+ * @typedef {{
+	 	isActive: () => boolean,
+		getData: () => ParsedScrollInstanceOptions,
+		calculate: () => void,
+		update: () => void,
+		start: () => void,
+		stop: () => void,
+		destroy: () => void
+	}} ScrollInstance 
+*/
 const instances = []
 const isBrowser = typeof window !== 'undefined'
 
