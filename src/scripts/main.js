@@ -59,14 +59,19 @@ import eases from 'eases'
 		destroy: () => void
 	}} ScrollInstance 
 */
+
+/**
+ * @type {Array<ScrollInstance>}
+ * This file contains different sort methods for the entry chunks names
+ */
 const instances = []
 const isBrowser = typeof window !== 'undefined'
 
 /**
  * Debounces a function that will be triggered many times.
- * @param {Function} fn
- * @param {Integer} duration
- * @returns {Function}
+ * @param {function} fn
+ * @param {number} duration
+ * @returns {any}
  */
 const debounce = function(fn, duration) {
 
@@ -84,8 +89,8 @@ const debounce = function(fn, duration) {
 
 /**
  * Returns all active instances from an array.
- * @param {Array} instances
- * @returns {Array} instances - Active instances.
+ * @param {Array<ScrollInstance>} instances
+ * @returns {Array<ScrollInstance>} instances - Active instances.
  */
 const getActiveInstances = function(instances) {
 
@@ -95,8 +100,8 @@ const getActiveInstances = function(instances) {
 
 /**
  * Returns all tracked instances from an array.
- * @param {Array} instances
- * @returns {Array} instances - Tracked instances.
+ * @param {Array<ScrollInstance>} instances
+ * @returns {Array<ScrollInstance>} instances - Tracked instances.
  */
 const getTrackedInstances = function(instances) {
 
@@ -107,7 +112,7 @@ const getTrackedInstances = function(instances) {
 
 /**
  * Returns the number of scrolled pixels.
- * @returns {Integer} scrollTop
+ * @returns {number} scrollTop
  */
 const getScrollTop = function() {
 
@@ -118,7 +123,7 @@ const getScrollTop = function() {
 
 /**
  * Returns the height of the viewport.
- * @returns {Integer} viewportHeight
+ * @returns {number} viewportHeight
  */
 const getViewportHeight = function() {
 
@@ -129,8 +134,8 @@ const getViewportHeight = function() {
 /**
  * Checks if a value is absolute.
  * An absolute value must have a value that's not NaN.
- * @param {String|Integer} value
- * @returns {Boolean} isAbsolute
+ * @param {string|number} value
+ * @returns {boolean} isAbsolute
  */
 const isAbsoluteValue = function(value) {
 
@@ -140,8 +145,8 @@ const isAbsoluteValue = function(value) {
 
 /**
  * Parses an absolute value.
- * @param {String|Integer} value
- * @returns {Object} value - Parsed value.
+ * @param {string|number} value
+ * @returns {{value: number, unit: string}} value - Parsed value.
  */
 const parseAbsoluteValue = function(value) {
 
@@ -157,8 +162,8 @@ const parseAbsoluteValue = function(value) {
 /**
  * Checks if a value is relative.
  * A relative value must start and end with [a-z] and needs a '-' in the middle.
- * @param {String|Integer} value
- * @returns {Boolean} isRelative
+ * @param {string|number} value
+ * @returns {boolean} isRelative
  */
 const isRelativeValue = function(value) {
 
@@ -182,11 +187,11 @@ const mapDirectToProperty = function(properties) {
 
 /**
  * Converts a relative value to an absolute value.
- * @param {String} value
- * @param {Node} elem - Anchor of the relative value.
- * @param {?Integer} scrollTop - Pixels scrolled in document.
- * @param {?Integer} viewportHeight - Height of the viewport.
- * @returns {String} value - Absolute value.
+ * @param {string} value
+ * @param {HTMLElement} elem - Anchor of the relative value.
+ * @param {number} [scrollTop] - Pixels scrolled in document.
+ * @param {number} [viewportHeight] - Height of the viewport.
+ * @returns {string} value - Absolute value.
  */
 const relativeToAbsoluteValue = function(value, elem, scrollTop = getScrollTop(), viewportHeight = getViewportHeight()) {
 
@@ -283,9 +288,9 @@ const validate = function(data) {
 
 /**
  * Calculates the props of an instance.
- * @param {Object} instance
- * @param {?Integer} scrollTop - Pixels scrolled in document.
- * @returns {Object} Calculated props and the element to apply styles to.
+ * @param {ScrollInstance} instance
+ * @param {?number} scrollTop - Pixels scrolled in document.
+ * @returns {{elem: HTMLElement, props: {[cssPropName: string]: string}}} Calculated props and the element to apply styles to.
  */
 const getProps = function(instance, scrollTop = getScrollTop()) {
 
@@ -308,7 +313,10 @@ const getProps = function(instance, scrollTop = getScrollTop()) {
 		direct: data.direct
 	})
 
-	// Generate an object with all new props
+	/** 
+	 * Generate an object with all new props
+	 * @type {{[cssPropName: string]: string}}
+	 */
 	const props = Object.keys(data.props).reduce((acc, key) => {
 
 		const prop = data.props[key]
@@ -355,7 +363,7 @@ const getProps = function(instance, scrollTop = getScrollTop()) {
 
 /**
  * Adds a property with the specified name and value to a given style object.
- * @param {Node} elem - Styles will be applied to this element.
+ * @param {HTMLElement} elem - Styles will be applied to this element.
  * @param {Object} prop - Object with a key and value.
  */
 const setProp = function(elem, prop) {
@@ -366,8 +374,8 @@ const setProp = function(elem, prop) {
 
 /**
  * Adds properties to a given style object.
- * @param {Node} elem - Styles will be applied to this element.
- * @param {Object} props - Object of props.
+ * @param {HTMLElement} elem - Styles will be applied to this element.
+ * @param {{[key: string]: string}} props - Object of props.
  */
 const setProps = function(elem, props) {
 
@@ -381,8 +389,8 @@ const setProps = function(elem, props) {
 /**
  * Gets and sets new props when the user has scrolled and when there are active instances.
  * This part get executed with every frame. Make sure it's performant as hell.
- * @param {Object} style - Style object.
- * @param {?Integer} previousScrollTop
+ * @param {Object} [style] - Style object.
+ * @param {number} [previousScrollTop]
  * @returns {?*}
  */
 const loop = function(style, previousScrollTop) {
@@ -419,12 +427,15 @@ const loop = function(style, previousScrollTop) {
 
 /**
  * Creates a new instance.
- * @param {Object} data
- * @returns {Object} instance
+ * @param {ScrollInstanceOptions} data
+ * @returns {ScrollInstance} instance
  */
 export const create = function(data) {
 
-	// Store the parsed data
+	/**
+	 * @type {ParsedScrollInstanceOptions|null} 
+	 * Store the parsed data
+	 */
 	let _data = null
 
 	// Store if instance is started or stopped
