@@ -211,20 +211,19 @@ const relativeToAbsoluteValue = function(value, elem, scrollTop = getScrollTop()
 
 /**
  * Validates data and sets defaults for undefined properties.
- * @param {?Object} data
- * @returns {Object} data - Validated data.
+ * @param {ScrollInstanceOptions} [data]
+ * @returns {ParsedScrollInstanceOptions} data - Validated data.
  */
-const validate = function(data = {}) {
+const validate = function(data) {
 
-	// Copy root object to avoid changes by reference
-	data = Object.assign({}, data)
+	const defaults = {
+		inside: () => {},
+		outside: () => {},
+		direct: false,
+		track: true,
+	}
 
-	if (data.inside == null) data.inside = () => {}
-	if (data.outside == null) data.outside = () => {}
-	if (data.direct == null) data.direct = false
-	if (data.track == null) data.track = true
-	if (data.props == null) data.props = {}
-
+	// Validate data
 	if (data.from == null) throw new Error('Missing property `from`')
 	if (data.to == null) throw new Error('Missing property `to`')
 	if (typeof data.inside !== 'function') throw new Error('Property `inside` must be undefined or a function')
@@ -234,6 +233,9 @@ const validate = function(data = {}) {
 	if (typeof data.track !== 'boolean') throw new Error('Property `track` must be undefined or a boolean')
 	if (typeof data.props !== 'object') throw new Error('Property `props` must be undefined or an object')
 
+	let from = data.from
+	let to = data.to
+
 	if (data.elem == null) {
 
 		if (isAbsoluteValue(data.from) === false) throw new Error('Property `from` must be a absolute value when no `elem` has been provided')
@@ -241,16 +243,15 @@ const validate = function(data = {}) {
 
 	} else {
 
-		if (isRelativeValue(data.from) === true) data.from = relativeToAbsoluteValue(data.from, data.elem)
-		if (isRelativeValue(data.to) === true) data.to = relativeToAbsoluteValue(data.to, data.elem)
+		if (isRelativeValue(data.from) === true) from = relativeToAbsoluteValue(data.from, data.elem)
+		if (isRelativeValue(data.to) === true) to = relativeToAbsoluteValue(data.to, data.elem)
 
 	}
 
-	data.from = parseAbsoluteValue(data.from)
-	data.to = parseAbsoluteValue(data.to)
-
-	// Create a new props object to avoid changes by reference
-	data.props = Object.keys(data.props).reduce((acc, key) => {
+	/**
+	 * @type {{[cssPropertyName: string]: { from: {value: number, unit: string}, to: {value: number, unit: string}, timing:  (t: number) => number}}}
+	 */
+	const props = Object.keys(data.props || {}).reduce((acc, key) => {
 
 		// Copy prop object to avoid changes by reference
 		const prop = Object.assign({}, data.props[key])
@@ -258,23 +259,25 @@ const validate = function(data = {}) {
 		if (isAbsoluteValue(prop.from) === false) throw new Error('Property `from` of prop must be a absolute value')
 		if (isAbsoluteValue(prop.to) === false) throw new Error('Property `from` of prop must be a absolute value')
 
-		prop.from = parseAbsoluteValue(prop.from)
-		prop.to = parseAbsoluteValue(prop.to)
+		acc[key] = Object.assign({
+			from: parseAbsoluteValue(prop.from),
+			to: parseAbsoluteValue(prop.from),
+			timing: eases[String(prop.timing)] || prop.timing || eases['linear'],
+		})
 
-		if (prop.timing == null) prop.timing = eases['linear']
-
-		if (typeof prop.timing !== 'string' && typeof prop.timing !== 'function') throw new Error('Property `timing` of prop must be undefined, a string or a function')
-
-		if (typeof prop.timing === 'string' && eases[prop.timing] == null) throw new Error('Unknown timing for property `timing` of prop')
-		if (typeof prop.timing === 'string') prop.timing = eases[prop.timing]
-
-		acc[key] = prop
+		if (typeof acc[key].timing !== 'function') throw new Error('Property `timing` of prop must be undefined, a valid easing name or a function')
 
 		return acc
 
 	}, {})
 
-	return data
+	const parsedData = Object.assign(defaults, data, {
+		from: parseAbsoluteValue(from),
+		to: parseAbsoluteValue(to),
+		props: props,
+	})
+
+	return parsedData
 
 }
 
