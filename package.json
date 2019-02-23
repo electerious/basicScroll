@@ -1,6 +1,5 @@
 {
   "name": "basicscroll",
-  "moduleName": "basicScroll",
   "version": "3.0.1",
   "authors": [
     "Tobias Reich <tobias@electerious.com>"
@@ -13,8 +12,7 @@
     "scrolling"
   ],
   "scripts": {
-    "start": "gulp watch",
-    "compile": "gulp"
+    "build": "node build.js"
   },
   "license": "MIT",
   "homepage": "https://github.com/electerious/basicScroll",
@@ -26,12 +24,11 @@
     "dist",
     "src"
   ],
-  "devDependencies": {
-    "@electerious/basictasks": "4.0.0",
-    "gulp": "^3.9.1"
-  },
   "dependencies": {
     "eases": "^1.0.8",
     "parse-unit": "^1.0.1"
+  },
+  "devDependencies": {
+    "rosid-handler-js": "^12.0.1"
   }
 }
