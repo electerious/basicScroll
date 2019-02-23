@@ -2,10 +2,10 @@
 
 const { writeFile } = require('fs')
 const { promisify } = require('util')
-const handler = require('rosid-handler-js')
+const js = require('rosid-handler-js')
 const save = promisify(writeFile)
 
-handler('src/scripts/main.js', {
+js('src/scripts/main.js', {
 
 	optimize: true,
 	browserify: {
