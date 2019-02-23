@@ -14,6 +14,6 @@ js('src/scripts/main.js', {
 
 }).then((data) => {
 
-	return save('dist/basicScroll.min.js', data, 'utf8')
+	return save('dist/basicScroll.min.js', data)
 
 })
