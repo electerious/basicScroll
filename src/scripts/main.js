@@ -7,7 +7,7 @@ const isBrowser = typeof window !== 'undefined'
 /**
  * Debounces a function that will be triggered many times.
  * @param {Function} fn
- * @param {Integer} duration
+ * @param {Number} duration
  * @returns {Function}
  */
 const debounce = function(fn, duration) {
@@ -49,7 +49,7 @@ const getTrackedInstances = function(instances) {
 
 /**
  * Returns the number of scrolled pixels.
- * @returns {Integer} scrollTop
+ * @returns {Number} scrollTop
  */
 const getScrollTop = function() {
 
@@ -60,7 +60,7 @@ const getScrollTop = function() {
 
 /**
  * Returns the height of the viewport.
- * @returns {Integer} viewportHeight
+ * @returns {Number} viewportHeight
  */
 const getViewportHeight = function() {
 
