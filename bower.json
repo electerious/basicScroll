@@ -5,7 +5,6 @@
   ],
   "description": "Standalone parallax scrolling for mobile and desktop with CSS variables",
   "main": [
-    "dist/basicScroll.min.css",
     "dist/basicScroll.min.js"
   ],
   "keywords": [],
