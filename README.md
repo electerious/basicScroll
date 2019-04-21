@@ -41,9 +41,9 @@ basicScroll allows you to change CSS variables depending on the scroll position.
 
 basicScroll depends on the following browser features and APIs:
 
-- [CSS Custom Properties](https://drafts.csswg.org/css-variables/#defining-variables)
-- [Object.assign](http://www.ecma-international.org/ecma-262/6.0/#sec-object.assign)
-- [requestAnimationFrame](https://www.w3.org/TR/animation-timing/#dom-windowanimationtiming-requestanimationframe)
+- [CSS Custom Properties](https://developer.mozilla.org/en-US/docs/Web/CSS/--*)
+- [Object.assign](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign)
+- [window.requestAnimationFrame](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame)
 
 Some of these APIs are capable of being polyfilled in older browsers. Check the linked resources above to determine if you must polyfill to achieve your desired level of browser support.
 
