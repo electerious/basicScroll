@@ -9,6 +9,7 @@ basicScroll allows you to change CSS variables depending on the scroll position.
 ## Contents
 
 - [Demos](#demos)
+- [Tutorials](#tutorials)
 - [Features](#features)
 - [Requirements](#requirements)
 - [Setup](#setup)
@@ -28,6 +29,15 @@ basicScroll allows you to change CSS variables depending on the scroll position.
 | Rolling eyes | Custom element to track scrolling. | [Try it on CodePen](https://codepen.io/electerious/pen/MZJZxm) | [@electerious](https://twitter.com/electerious) |
 | Headline explosion | Animated letters. | [Try it on CodePen](https://codepen.io/electerious/pen/EQzxxJ) | [@electerious](https://twitter.com/electerious) |
 | Scroll and morph | Morph text using CSS clip-path. | [Try it on CodePen](https://codepen.io/ainalem/pen/jZzxrP) | [@mikaelainalem](https://twitter.com/mikaelainalem) |
+| Parallax with JS | Several examples and a debug mode | [Try it on CodePen](https://codepen.io/animaticss/pen/rNBJwmq) | [AnimatiCSS](https://www.youtube.com/channel/UC73Tk5wfEBh67Vm7gM_zaAw) |
+
+## Tutorials
+
+| Name | Link |
+|:-----------|:------------|
+| 📃 Parallax scrolling with JS controlled CSS variables | [Read it on Medium](https://medium.com/@electerious/parallax-scrolling-with-js-controlled-css-variables-63cfe96820c7) |
+| 🎬 Apple-like scroll animations | [Watch it on YouTube](https://www.youtube.com/watch?v=hPd1srSWDU4) |
+| 🎬 Parallax effect tutorial (🇪🇸) | [Watch it on YouTube](https://www.youtube.com/watch?v=QeRg4t3I2zc) |
 
 ## Features
 
