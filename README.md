@@ -1,6 +1,6 @@
 # basicScroll
 
-[![Dependencies](https://david-dm.org/electerious/basicscroll.svg)](https://david-dm.org/electerious/basicscroll.svg#info=dependencies) [![Donate via PayPal](https://img.shields.io/badge/paypal-donate-009cde.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CYKBESW577YWE)
+[![Donate via PayPal](https://img.shields.io/badge/paypal-donate-009cde.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CYKBESW577YWE)
 
 Standalone parallax scrolling for mobile and desktop with CSS variables.
 
