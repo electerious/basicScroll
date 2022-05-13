@@ -167,7 +167,7 @@ const validate = function(data = {}) {
 	if (data.direct == null) data.direct = false
 	if (data.track == null) data.track = true
 	if (data.props == null) data.props = {}
-    if (data.reversed == null) data.reversed = 0
+	if (data.reversed == null) data.reversed = 0
 
 	if (data.from == null) throw new Error('Missing property `from`')
 	if (data.to == null) throw new Error('Missing property `to`')
@@ -238,7 +238,7 @@ const getProps = function(instance, scrollTop = getScrollTop()) {
 	// Pixel scrolled
 	const current = scrollTop - data.from.value
 
-    // Percent scrolled
+	// Percent scrolled
 	const precisePercentage = current / (total / 100)
 	let normalizedPercentage = Math.min(Math.max(precisePercentage, 0), 100)
 
@@ -249,25 +249,25 @@ const getProps = function(instance, scrollTop = getScrollTop()) {
 		direct: data.direct
 	})
 
-    // Calculate point of reversal
-    if(data.reversed > 0) {
-      const pointOfReversal = ( data.reversed / 100 ) * total
+	// Calculate point of reversal
+	if(data.reversed > 0) {
+		const pointOfReversal = ( data.reversed / 100 ) * total
 
-      let newPrecisePercentage
+		let newPrecisePercentage
 
-      if(current <= pointOfReversal) {
-        // normal direction
-        newPrecisePercentage = current / (pointOfReversal / 100)
-      } else {
-        // reverse direction
-        newPrecisePercentage = (current - pointOfReversal) / ( (total - pointOfReversal)/ 100)
-      }
+		if(current <= pointOfReversal) {
+			// normal direction
+			newPrecisePercentage = current / (pointOfReversal / 100)
+		} else {
+			// reverse direction
+			newPrecisePercentage = (current - pointOfReversal) / ( (total - pointOfReversal)/ 100)
+		}
 
-      normalizedPercentage = Math.min(Math.max(newPrecisePercentage, 0), 100)
-    }
+		normalizedPercentage = Math.min(Math.max(newPrecisePercentage, 0), 100)
+	}
 
 
-    // Generate an object with all new props
+	// Generate an object with all new props
 	const props = Object.keys(data.props).reduce((acc, key) => {
 		const prop = data.props[key]
 
@@ -287,7 +287,7 @@ const getProps = function(instance, scrollTop = getScrollTop()) {
           }
         }
 
-        // All easing functions only remap a time value, and all have the same signature.
+		// All easing functions only remap a time value, and all have the same signature.
 		// Typically a value between 0 and 1, and it returns a new float that has been eased.
 		const time = prop.timing(normalizedPercentage / 100)
 
