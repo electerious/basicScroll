@@ -167,6 +167,7 @@ const validate = function(data = {}) {
 	if (data.direct == null) data.direct = false
 	if (data.track == null) data.track = true
 	if (data.props == null) data.props = {}
+	if (data.reversed == null) data.reversed = 0
 
 	if (data.from == null) throw new Error('Missing property `from`')
 	if (data.to == null) throw new Error('Missing property `to`')
@@ -239,7 +240,7 @@ const getProps = function(instance, scrollTop = getScrollTop()) {
 
 	// Percent scrolled
 	const precisePercentage = current / (total / 100)
-	const normalizedPercentage = Math.min(Math.max(precisePercentage, 0), 100)
+	let normalizedPercentage = Math.min(Math.max(precisePercentage, 0), 100)
 
 	// Get the element that should be used according to direct
 	const elem = mapDirectToProperty(data.direct, {
@@ -248,9 +249,26 @@ const getProps = function(instance, scrollTop = getScrollTop()) {
 		direct: data.direct
 	})
 
+	// Calculate point of reversal
+	if(data.reversed > 0) {
+		const pointOfReversal = ( data.reversed / 100 ) * total
+
+		let newPrecisePercentage
+
+		if(current <= pointOfReversal) {
+			// normal direction
+			newPrecisePercentage = current / (pointOfReversal / 100)
+		} else {
+			// reverse direction
+			newPrecisePercentage = (current - pointOfReversal) / ( (total - pointOfReversal)/ 100)
+		}
+
+		normalizedPercentage = Math.min(Math.max(newPrecisePercentage, 0), 100)
+	}
+
+
 	// Generate an object with all new props
 	const props = Object.keys(data.props).reduce((acc, key) => {
-
 		const prop = data.props[key]
 
 		// Use the unit of from OR to. It's valid to animate from '0' to '100px' and
@@ -258,13 +276,31 @@ const getProps = function(instance, scrollTop = getScrollTop()) {
 		const unit = prop.from.unit || prop.to.unit
 
 		// The value that should be interpolated
-		const diff = prop.from.value - prop.to.value
+        let diff = prop.from.value - prop.to.value
+
+        if(data.reversed > 0) {
+          const pointOfReversal = (data.reversed / 100) * total
+
+          if(current > pointOfReversal) {
+            // reverse direction
+            diff = prop.to.value - prop.from.value
+          }
+        }
 
 		// All easing functions only remap a time value, and all have the same signature.
 		// Typically a value between 0 and 1, and it returns a new float that has been eased.
 		const time = prop.timing(normalizedPercentage / 100)
 
-		const value = prop.from.value - diff * time
+        let value = prop.from.value - diff * time
+
+        if(data.reversed > 0) {
+          const pointOfReversal = (data.reversed / 100) * total
+
+          if(current > pointOfReversal) {
+            // reverse direction
+            value = prop.to.value - diff * time
+          }
+        }
 
 		// Round to avoid unprecise values.
 		// The precision of floating point computations is only as precise as the precision it uses.
