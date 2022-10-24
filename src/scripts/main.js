@@ -1,7 +1,7 @@
 import parseUnit from 'parse-unit'
 import eases from 'eases'
 
-const instances = []
+const scrollContainers = []
 const isBrowser = typeof window !== 'undefined'
 
 /**
@@ -29,9 +29,9 @@ const debounce = function(fn, duration) {
  * @param {Array} instances
  * @returns {Array} instances - Active instances.
  */
-const getActiveInstances = function(instances) {
+const getActiveInstances = function(container) {
 
-	return instances.filter((instance) => instance != null && instance.isActive())
+	return container.instances.filter((instance) => instance != null && instance.isActive())
 
 }
 
@@ -40,21 +40,22 @@ const getActiveInstances = function(instances) {
  * @param {Array} instances
  * @returns {Array} instances - Tracked instances.
  */
-const getTrackedInstances = function(instances) {
+const getTrackedInstances = function(container) {
 
-	return instances.filter((instance) => instance != null && instance.getData().track)
+    return container.instances.filter((instance) => instance != null && instance.getData().track)
 
 }
 
 
 /**
  * Returns the number of scrolled pixels.
+ * @param {Object} scrollingElement - Scrolling container.
  * @returns {Number} scrollTop
  */
-const getScrollTop = function() {
+const getScrollTop = function(scrollingElement) {
 
 	// Use scrollTop because it's faster than getBoundingClientRect()
-	return (document.scrollingElement || document.documentElement).scrollTop
+	return scrollingElement.scrollTop
 
 }
 
@@ -127,12 +128,12 @@ const mapDirectToProperty = function(direct, properties) {
  * Converts a relative value to an absolute value.
  * @param {String} value
  * @param {Node} elem - Anchor of the relative value.
- * @param {?Integer} scrollTop - Pixels scrolled in document.
+ * @param {Object} scrollingElement - Scrolling container.
  * @param {?Integer} viewportHeight - Height of the viewport.
  * @returns {String} value - Absolute value.
  */
-const relativeToAbsoluteValue = function(value, elem, scrollTop = getScrollTop(), viewportHeight = getViewportHeight()) {
-
+const relativeToAbsoluteValue = function(value, elem, scrollingElement, viewportHeight = getViewportHeight()) {
+    const scrollTop = getScrollTop(scrollingElement)
 	const elemSize = elem.getBoundingClientRect()
 
 	const elemAnchor = value.match(/^[a-z]+/)[0]
@@ -157,7 +158,7 @@ const relativeToAbsoluteValue = function(value, elem, scrollTop = getScrollTop()
  * @param {?Object} data
  * @returns {Object} data - Validated data.
  */
-const validate = function(data = {}) {
+const validate = function(data = {}, scrollingElement) {
 
 	// Copy root object to avoid changes by reference
 	data = Object.assign({}, data)
@@ -184,8 +185,8 @@ const validate = function(data = {}) {
 
 	} else {
 
-		if (isRelativeValue(data.from) === true) data.from = relativeToAbsoluteValue(data.from, data.elem)
-		if (isRelativeValue(data.to) === true) data.to = relativeToAbsoluteValue(data.to, data.elem)
+		if (isRelativeValue(data.from) === true) data.from = relativeToAbsoluteValue(data.from, data.elem, scrollingElement)
+		if (isRelativeValue(data.to) === true) data.to = relativeToAbsoluteValue(data.to, data.elem, scrollingElement)
 
 	}
 
@@ -224,12 +225,13 @@ const validate = function(data = {}) {
 /**
  * Calculates the props of an instance.
  * @param {Object} instance
- * @param {?Integer} scrollTop - Pixels scrolled in document.
+ * @param {Object} scrollingElement - Scrolling container.
  * @returns {Object} Calculated props and the element to apply styles to.
  */
-const getProps = function(instance, scrollTop = getScrollTop()) {
-
-	const data = instance.getData()
+const getProps = function(instance) {
+    const data = instance.getData()
+    
+    const scrollTop = getScrollTop(instance.scrollingElement)
 
 	// 100% in pixel
 	const total = data.to.value - data.from.value
@@ -322,39 +324,33 @@ const setProps = function(elem, props) {
  * Gets and sets new props when the user has scrolled and when there are active instances.
  * This part get executed with every frame. Make sure it's performant as hell.
  * @param {Object} style - Style object.
- * @param {?Integer} previousScrollTop
  * @returns {?*}
  */
-const loop = function(style, previousScrollTop) {
+const loop = function(style) {
 
 	// Continue loop
 	const repeat = () => {
+        scrollContainers.forEach(container => {
+            // console.log(1)
+            // Get all active instances
 
-		// It depends on the browser, but it turns out that closures
-		// are sometimes faster than .bind or .apply.
-		requestAnimationFrame(() => loop(style, previousScrollTop))
+            const activeInstances = getActiveInstances(container)
+            
+            if (activeInstances.length) {
+                const scrollTop = getScrollTop(container.element)
 
+                if (container.scrollTop !== scrollTop) {
+                    activeInstances
+                        .map((instance) => getProps(instance))
+                        .forEach(({ elem, props }) => setProps(elem, props))
+                    
+                    container.previousScrollTop = scrollTop
+                }
+            }
+        })
+        requestAnimationFrame(repeat)
 	}
-
-	// Get all active instances
-	const activeInstances = getActiveInstances(instances)
-
-	// Only continue when active instances available
-	if (activeInstances.length === 0) return repeat()
-
-	const scrollTop = getScrollTop()
-
-	// Only continue when scrollTop has changed
-	if (previousScrollTop === scrollTop) return repeat()
-	else previousScrollTop = scrollTop
-
-	// Get and set new props of each instance
-	activeInstances
-		.map((instance) => getProps(instance, scrollTop))
-		.forEach(({ elem, props }) => setProps(elem, props))
-
-	repeat()
-
+    requestAnimationFrame(repeat)
 }
 
 /**
@@ -362,9 +358,10 @@ const loop = function(style, previousScrollTop) {
  * @param {Object} data
  * @returns {Object} instance
  */
-export const create = function(data) {
-
+export const create = function(data, scrollingElement=null) {
 	// Store the parsed data
+    if (!scrollingElement) scrollingElement = (document.scrollingElement || document.documentElement)
+    const _scrollingElement = scrollingElement
 	let _data = null
 
 	// Store if instance is started or stopped
@@ -387,13 +384,13 @@ export const create = function(data) {
 	// Parses and calculates data
 	const _calculate = function() {
 
-		_data = validate(data)
+		_data = validate(data, _scrollingElement)
 
 	}
 
 	// Update props
 	const _update = () => {
-
+        
 		// Get new props
 		const { elem, props } = getProps(instance)
 
@@ -423,13 +420,17 @@ export const create = function(data) {
 
 		// Replace instance instead of deleting the item to avoid
 		// that the index of other instances changes.
-		instances[index] = undefined
-
+        scrollContainers.forEach(container => {
+            if (container.element == scrollingElement) {
+                container.instances[index] = undefined
+            }
+        })
 	}
 
 	// Assign instance to a variable so the instance can be used
 	// elsewhere in the current function.
 	const instance = {
+        scrollingElement: scrollingElement,
 		isActive: _isActive,
 		getData: _getData,
 		calculate: _calculate,
@@ -440,8 +441,28 @@ export const create = function(data) {
 	}
 
 	// Store instance in global array and save the index
-	const index = instances.push(instance) - 1
+	let index = 0
 
+    // Store the scroll container to get their value
+    let found = false
+    scrollContainers.forEach(container => {
+        if (container.element == scrollingElement) {
+            index = container.instances.push(instance) - 1
+            found = true
+        }
+    })
+    if (!found) {
+        scrollContainers.push({
+            element: scrollingElement,
+            instances: [
+                instance
+            ],
+            previousScrollTop: 0
+        })
+    }
+
+    console.log(scrollContainers)
+    
 	// Calculate data for the first time
 	instance.calculate()
 
@@ -455,16 +476,21 @@ if (isBrowser === true) {
 	// Start to loop
 	loop()
 
+    console.log('okay')
+
 	// Recalculate and update instances when the window size changes
 	window.addEventListener('resize', debounce(() => {
 
-		// Get all tracked instances
-		const trackedInstances = getTrackedInstances(instances)
+        scrollContainers.forEach(container => {
 
-		trackedInstances.forEach((instance) => {
-			instance.calculate()
-			instance.update()
-		})
+            // Get all tracked instances
+            const trackedInstances = getTrackedInstances(container)
+
+            trackedInstances.forEach((instance) => {
+                instance.calculate()
+                instance.update()
+            })
+        })
 
 	}, 50))
 
